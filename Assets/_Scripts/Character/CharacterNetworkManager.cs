@@ -12,6 +12,10 @@ namespace Core
 
         [field: SerializeField] public Vector3 NetworkPositionVelocity;
 
-        [field: SerializeField] public float NetworkPositionSmoothTime { get; private set; } = 0.1f;
+
+        // TIME TO SYNC POSITIONS
+        [field: SerializeField] public float NetworkPositionSmoothTime { get; private set; } = 0.05f;
+
+        // TODO: IMPLEMENT NETWORK MOVEMENT VARIABLES 
     }
 }

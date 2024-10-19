@@ -1,35 +1,37 @@
 using UnityEngine;
-using Zenject;
 
 namespace Core
 {
     public class PlayerMovementManager : CharacterMovementManager
     {
-        [SerializeField] private PlayerInputManager _inputManager;
-
-
         [SerializeField] private float _movementSpeed = 5;
-
-        [Inject]
-        public void Construct(PlayerInputManager inputManager)
-        {
-            _inputManager = inputManager;
-        }
-
 
         protected override void Awake()
         {
             base.Awake();
         }
 
+        protected override void Update()
+        {
+            base.Update();
+        }
+
         protected override void ProceedMovement()
         {
             base.ProceedMovement();
 
-            Vector2 newPosition = _rigidbody.position + _movementSpeed * Time.deltaTime * _inputManager.MovementInput ;
+            if (_movementDirection.magnitude == 0) return;
+
+            Vector2 newPosition = _rigidbody.position + _movementSpeed * Time.fixedDeltaTime * _movementDirection;
             _rigidbody.MovePosition(newPosition);
+
+            // TODO: PLAY ANIMATION
         }
 
+        public void ReadMovementInput(Vector2 movementInput)
+        {
+            SetMovementDirection(movementInput);
+        }
 
         protected override void HandleAllMovement()
         {
