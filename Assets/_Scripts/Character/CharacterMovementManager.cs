@@ -23,7 +23,6 @@ namespace Core
         {
             if (_movementDirection.Equals(newDirection)) return;
 
-
             if (newDirection.Equals(Vector2.zero))
             {
                 _movementDirection = newDirection;

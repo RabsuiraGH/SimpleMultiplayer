@@ -12,15 +12,16 @@ namespace Core
 
         public CharacterAnimatorManager CharacterAnimatorManager { get; private set; }
 
+
         [SerializeField] private CharacterStateMachine _characterStateMachine;
 
         public CharacterIdleState IdleState { get; private set; }
 
         public CharacterMovementState MovementState { get; private set; }
 
-        [SerializeField] public Directions.MainDirection MainDirection { get; protected set; }
+        [field:SerializeField] public Directions.MainDirection MainDirection { get; protected set; }
 
-        [SerializeField] public Directions.SecondaryDirection SecDirection { get; protected set; }
+        [field: SerializeField] public Directions.SecondaryDirection SecDirection { get; protected set; }
 
         public event Action<Directions.MainDirection, Directions.SecondaryDirection> OnDirectionChanged;
 
@@ -51,20 +52,18 @@ namespace Core
                 SecDirection = Directions.SecondaryDirection.Up;
             else if (movementDirecction.y < 0)
                 SecDirection = Directions.SecondaryDirection.Down;
-            else if(movementDirecction.y == 0 && movementDirecction.x != 0)
+            else if (movementDirecction.y == 0 && movementDirecction.x != 0)
                 SecDirection = Directions.SecondaryDirection.Down;
-
 
             OnDirectionChanged?.Invoke(MainDirection, SecDirection);
         }
 
         protected virtual void Update()
         {
-
             if (IsOwner)
             {
                 _characterStateMachine.CurrentState.FrameUpdate();
-                    CharacterNetworkManager.NetworkPosition.Value = this.transform.position;
+                CharacterNetworkManager.NetworkPosition.Value = this.transform.position;
             }
             // IF THIS CHARACTER IS BEING CONTROLLED FROM ELSE WHERE, THEN ASSIGN ITS POSITION HERE LOCALY BY THE POSITION OF ITS NETWORK TRANSFORM
             else

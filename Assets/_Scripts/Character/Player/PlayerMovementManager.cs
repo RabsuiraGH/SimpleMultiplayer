@@ -24,8 +24,6 @@ namespace Core
 
             Vector2 newPosition = _rigidbody.position + _movementSpeed * Time.fixedDeltaTime * _movementDirection;
             _rigidbody.MovePosition(newPosition);
-
-            // TODO: PLAY ANIMATION
         }
 
         public void ReadMovementInput(Vector2 movementInput)
