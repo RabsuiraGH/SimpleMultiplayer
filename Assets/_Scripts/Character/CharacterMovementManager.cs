@@ -10,6 +10,8 @@ namespace Core
 
         [SerializeField] protected Vector2 _movementDirection;
 
+        [SerializeField] protected float _movementSpeed = 5;
+
         public bool IsMoving => _movementDirection.magnitude > 0;
 
         protected virtual void Awake()
@@ -17,9 +19,13 @@ namespace Core
             _rigidbody = GetComponent<Rigidbody2D>();
         }
 
-        protected virtual void Update() { }
+        protected virtual void Update()
+        {
+        }
 
-        protected virtual void FixedUpdate() { }
+        protected virtual void FixedUpdate()
+        {
+        }
 
         public event Action<Vector2> OnMovementDirectionChanged;
 
@@ -47,8 +53,18 @@ namespace Core
             OnMovementDirectionChanged?.Invoke(newDirection);
         }
 
-        public virtual void HandleAllMovement() { }
+        public void UpdateMovementSpeed(float speed)
+        {
+            _movementSpeed = speed;
+        }
 
-        protected virtual void ProceedMovement() { }
+
+        public virtual void HandleAllMovement()
+        {
+        }
+
+        protected virtual void ProceedMovement()
+        {
+        }
     }
 }

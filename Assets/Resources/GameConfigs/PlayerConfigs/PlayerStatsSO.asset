@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5ba9ddf13e93be4789560cca146e9f9, type: 3}
+  m_Name: PlayerStatsSO
+  m_EditorClassIdentifier: 
+  <Health>k__BackingField:
+    <MaxValue>k__BackingField:
+      value: 20
+    <CurrentValue>k__BackingField:
+      value: 20
+    <MinValue>k__BackingField:
+      value: 0
+  <Damage>k__BackingField:
+    <MaxValue>k__BackingField:
+      value: 5
+    <CurrentValue>k__BackingField:
+      value: 5
+    <MinValue>k__BackingField:
+      value: 1
+  <Armor>k__BackingField:
+    <MaxValue>k__BackingField:
+      value: 0
+    <CurrentValue>k__BackingField:
+      value: 0
+    <MinValue>k__BackingField:
+      value: -100
+  <MovementSpeed>k__BackingField:
+    <MaxValue>k__BackingField:
+      value: 5
+    <CurrentValue>k__BackingField:
+      value: 5
+    <MinValue>k__BackingField:
+      value: 0.1

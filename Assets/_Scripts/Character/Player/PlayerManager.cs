@@ -12,12 +12,16 @@ namespace Core
 
         [field: SerializeField] public PlayerAnimatorManager PlayerAnimationManager { get; private set; }
 
+        protected PlayerStatsManager PlayerStatsManager { get; private set; }
+
+
         protected override void Awake()
         {
             base.Awake();
 
             PlayerMovementManager = GetComponent<PlayerMovementManager>();
             PlayerAnimationManager = GetComponent<PlayerAnimatorManager>();
+            PlayerStatsManager = GetComponent<PlayerStatsManager>();
         }
 
         protected override void Start()

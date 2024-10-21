@@ -1,4 +1,6 @@
 using System;
+using Codice.CM.Client.Differences;
+using R3;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -9,22 +11,29 @@ namespace Core
         [SerializeField] protected StateMachine _characterStateMachine;
         [field: SerializeField] public Directions.MainDirection MainDirection { get; protected set; }
         [field: SerializeField] public Directions.SecondaryDirection SecDirection { get; protected set; }
-        public CharacterNetworkManager CharacterNetworkManager { get; private set; }
+        [field: SerializeField] public CharacterNetworkManager CharacterNetworkManager { get; private set; }
 
-        protected CharacterMovementManager CharacterMovementManager { get; private set; }
+        [field: SerializeField] protected CharacterMovementManager CharacterMovementManager { get; private set; }
 
-        protected CharacterAnimatorManager CharacterAnimatorManager { get; private set; }
+        [field: SerializeField] protected CharacterAnimatorManager CharacterAnimatorManager { get; private set; }
+
+        [field: SerializeField] protected CharacterStatsManager CharacterStatsManager { get; private set; }
 
         protected virtual void Awake()
         {
             CharacterNetworkManager = GetComponent<CharacterNetworkManager>();
             CharacterMovementManager = GetComponent<CharacterMovementManager>();
             CharacterAnimatorManager = GetComponent<CharacterAnimatorManager>();
-
-            CharacterMovementManager.OnMovementDirectionChanged += ChangeFaceDirection;
+            CharacterStatsManager = GetComponent<CharacterStatsManager>();
         }
 
-        protected virtual void Start() { }
+        protected virtual void Start()
+        {
+            CharacterMovementManager.OnMovementDirectionChanged += ChangeFaceDirection;
+
+            CharacterStatsManager.GetStats().MovementSpeed.CurrentValueReadonly
+                                 .Subscribe(newValue => CharacterMovementManager.UpdateMovementSpeed(newValue));
+        }
 
         protected virtual void Update()
         {

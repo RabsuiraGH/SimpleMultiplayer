@@ -4,7 +4,6 @@ namespace Core
 {
     public class PlayerMovementManager : CharacterMovementManager
     {
-        [SerializeField] private float _movementSpeed = 5;
 
         protected override void Awake()
         {
