@@ -1,3 +1,4 @@
+using R3;
 using UnityEngine;
 using Zenject;
 
@@ -7,13 +8,14 @@ namespace Core
     {
         public PlayerMovementManager PlayerMovementManager { get; private set; }
         public PlayerInputManager InputManager { get; private set; }
-        [field: SerializeField] public PlayerIdleState IdleState { get; private set; }
-        [field: SerializeField] public PlayerMovementState MovementState { get; private set; }
+        public PlayerIdleState IdleState { get; private set; }
+        public PlayerMovementState MovementState { get; private set; }
 
-        [field: SerializeField] public PlayerAnimatorManager PlayerAnimationManager { get; private set; }
+        public PlayerAnimatorManager PlayerAnimationManager { get; private set; }
 
         protected PlayerStatsManager PlayerStatsManager { get; private set; }
 
+        protected PlayerUIManager PlayerUIManager { get; private set; }
 
         protected override void Awake()
         {
@@ -30,6 +32,8 @@ namespace Core
             IdleState = new PlayerIdleState(this, _characterStateMachine, null);
             MovementState = new PlayerMovementState(this, _characterStateMachine, null);
             _characterStateMachine.Initialize(IdleState);
+
+            PlayerUIManager.SetupUI(PlayerStatsManager);
         }
 
         protected override void Update()
@@ -40,9 +44,10 @@ namespace Core
         }
 
         [Inject]
-        public void Construct(PlayerInputManager inputManager)
+        public void Construct(PlayerInputManager inputManager, PlayerUIManager playerUIManager)
         {
             InputManager = inputManager;
+            PlayerUIManager = playerUIManager;
         }
 
         private void ReadAllInputs()

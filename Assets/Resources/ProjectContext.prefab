@@ -81,6 +81,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerInputManager: {fileID: 6621028223854634904}
   _playerBaseStats: {fileID: 11400000, guid: dadf3d11f5efeba42a32f0758e36a994, type: 2}
+  _playerUIManager: {fileID: 7010347986217145632, guid: fc68f691167de254eb8a82ec4e5563da, type: 3}
 --- !u!114 &-8510674543766702082
 MonoBehaviour:
   m_ObjectHideFlags: 0

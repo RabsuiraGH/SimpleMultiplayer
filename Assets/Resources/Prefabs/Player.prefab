@@ -336,6 +336,10 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   <MainDirection>k__BackingField: 1
   <SecDirection>k__BackingField: 1
+  <CharacterNetworkManager>k__BackingField: {fileID: 0}
+  <CharacterMovementManager>k__BackingField: {fileID: 0}
+  <CharacterAnimatorManager>k__BackingField: {fileID: 0}
+  <CharacterStatsManager>k__BackingField: {fileID: 0}
   <PlayerAnimationManager>k__BackingField: {fileID: 0}
 --- !u!114 &-4173806167024148138
 MonoBehaviour:
@@ -380,4 +384,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   _characterStatsSO: {fileID: 0}
-  _playerStatsSO: {fileID: 0}
