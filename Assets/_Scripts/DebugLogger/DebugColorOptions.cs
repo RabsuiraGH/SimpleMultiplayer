@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 namespace Core.Utility.DebugTool
 {
@@ -29,23 +24,23 @@ namespace Core.Utility.DebugTool
             Lime
         }
 
-        public static Dictionary<HtmlColor, string> Colors = new Dictionary<HtmlColor, string>
+        public static Dictionary<HtmlColor, string> Colors = new()
         {
-            { HtmlColor.Red,     "Red" },
-            { HtmlColor.White,   "White" },
-            { HtmlColor.Black,   "Black" },
-            { HtmlColor.Green,   "Green" },
-            { HtmlColor.Blue,    "Blue" },
-            { HtmlColor.Yellow,  "Yellow" },
-            { HtmlColor.Gray,    "Gray" },
-            { HtmlColor.Cyan,    "Cyan" },
+            { HtmlColor.Red, "Red" },
+            { HtmlColor.White, "White" },
+            { HtmlColor.Black, "Black" },
+            { HtmlColor.Green, "Green" },
+            { HtmlColor.Blue, "Blue" },
+            { HtmlColor.Yellow, "Yellow" },
+            { HtmlColor.Gray, "Gray" },
+            { HtmlColor.Cyan, "Cyan" },
             { HtmlColor.Magenta, "Magenta" },
-            { HtmlColor.Orange,  "Orange" },
-            { HtmlColor.Pink,    "Pink" },
-            { HtmlColor.Brown,   "Brown" },
-            { HtmlColor.Violet,  "Violet" },
-            { HtmlColor.Purple,  "Purple" },
-            { HtmlColor.Lime,    "Lime" },
+            { HtmlColor.Orange, "Orange" },
+            { HtmlColor.Pink, "Pink" },
+            { HtmlColor.Brown, "Brown" },
+            { HtmlColor.Violet, "Violet" },
+            { HtmlColor.Purple, "Purple" },
+            { HtmlColor.Lime, "Lime" }
         };
     }
 }

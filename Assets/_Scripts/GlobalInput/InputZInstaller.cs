@@ -1,5 +1,4 @@
 using Core.InputSystem;
-using UnityEngine.EventSystems;
 using Zenject;
 
 namespace Core

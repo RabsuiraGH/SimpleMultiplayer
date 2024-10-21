@@ -16,11 +16,18 @@ namespace Core
             base.Update();
         }
 
+        protected override void FixedUpdate()
+        {
+        }
+
         protected override void ProceedMovement()
         {
             base.ProceedMovement();
 
-            if (_movementDirection.magnitude == 0) return;
+            if (_movementDirection.magnitude == 0)
+            {
+                return;
+            }
 
             Vector2 newPosition = _rigidbody.position + _movementSpeed * Time.fixedDeltaTime * _movementDirection;
             _rigidbody.MovePosition(newPosition);
@@ -31,16 +38,11 @@ namespace Core
             SetMovementDirection(movementInput);
         }
 
-        protected override void HandleAllMovement()
+        public override void HandleAllMovement()
         {
             base.HandleAllMovement();
 
             ProceedMovement();
-        }
-
-        protected override void FixedUpdate()
-        {
-            HandleAllMovement();
         }
     }
 }

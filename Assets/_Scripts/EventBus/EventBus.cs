@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.Utility.DebugTool;
 using UnityEngine;
-
 using static Core.Utility.DebugTool.DebugColorOptions.HtmlColor;
 
 namespace Core.GameEventSystem
@@ -11,22 +10,28 @@ namespace Core.GameEventSystem
     [Serializable]
     public class EventBus
     {
-        private Dictionary<string, List<CallbackWithPriority>> _signalCallbacks = new Dictionary<string, List<CallbackWithPriority>>();
         [SerializeField] private DebugLogger _debugger = new();
+        private Dictionary<string, List<CallbackWithPriority>> _signalCallbacks = new();
 
 #if UNITY_EDITOR
 
         public void GetAllData()
         {
             _debugger.Log(null, "EVENT BUS SIGNALS!!");
-            foreach (KeyValuePair<string, List<CallbackWithPriority>> pair in _signalCallbacks)
+            foreach (var pair in _signalCallbacks)
             {
                 foreach (CallbackWithPriority callback in _signalCallbacks[pair.Key])
                 {
                     if (callback.Callback is Delegate d)
-                        _debugger.Log(null, $" SIGNAL: {(pair.Key).Color(Cyan)} -- CALLBACK: {((d.Method.Name)).Color(Cyan)}");
+                    {
+                        _debugger.Log(
+                            null, $" SIGNAL: {pair.Key.Color(Cyan)} -- CALLBACK: {d.Method.Name.Color(Cyan)}");
+                    }
                     else
-                        _debugger.Log(null, $" SIGNAL: {(pair.Key).Color(Cyan)} -- CALLBACK: {((callback.Callback)).Color(Cyan)}");
+                    {
+                        _debugger.Log(
+                            null, $" SIGNAL: {pair.Key.Color(Cyan)} -- CALLBACK: {callback.Callback.Color(Cyan)}");
+                    }
                 }
             }
         }
@@ -43,11 +48,11 @@ namespace Core.GameEventSystem
             }
             else
             {
-                _signalCallbacks.Add(key, new List<CallbackWithPriority>() { new(priority, callback) });
+                _signalCallbacks.Add(key, new List<CallbackWithPriority> { new(priority, callback) });
             }
 
-            _debugger.Log(null, $"Action {(callback.Method.Name).ToString().Color(Green)} was subscribed " +
-                                                    $"to signal {(typeof(T).Name).Color(Green)}");
+            _debugger.Log(null, $"Action {callback.Method.Name.Color(Green)} was subscribed " +
+                                $"to signal {typeof(T).Name.Color(Green)}");
 
             _signalCallbacks[key] = _signalCallbacks[key].OrderByDescending(x => x.Priority).ToList();
         }
@@ -58,9 +63,9 @@ namespace Core.GameEventSystem
 
             if (_signalCallbacks.ContainsKey(key))
             {
-                _debugger.Log(null, $"Signal {(key).Color(Green)} was Invoked");
+                _debugger.Log(null, $"Signal {key.Color(Green)} was Invoked");
 
-                foreach (var obj in _signalCallbacks[key])
+                foreach (CallbackWithPriority obj in _signalCallbacks[key])
                 {
                     var callback = obj.Callback as Action<T>;
                     callback?.Invoke(signal);
@@ -68,7 +73,8 @@ namespace Core.GameEventSystem
             }
             else
             {
-                Debug.LogWarning($"No any listeners to {(key).Color(Green)} signal! (possible missing eventBus instance)");
+                Debug.LogWarning(
+                    $"No any listeners to {key.Color(Green)} signal! (possible missing eventBus instance)");
             }
         }
 
@@ -78,17 +84,18 @@ namespace Core.GameEventSystem
 
             if (_signalCallbacks.ContainsKey(key))
             {
-                var callbackToDelete = _signalCallbacks[key].FirstOrDefault(x => x.Callback.Equals(callback));
+                CallbackWithPriority callbackToDelete =
+                    _signalCallbacks[key].FirstOrDefault(x => x.Callback.Equals(callback));
                 if (callbackToDelete != null)
                 {
                     _signalCallbacks[key].Remove(callbackToDelete);
-                    _debugger.Log(null, $"Action {(callback.Method.Name).Color(Red)} was unsubscribed " +
-                                                    $"to signal {(typeof(T).Name).Color(Red)}");
+                    _debugger.Log(null, $"Action {callback.Method.Name.Color(Red)} was unsubscribed " +
+                                        $"to signal {typeof(T).Name.Color(Red)}");
                 }
             }
             else
             {
-                Debug.LogError($"Trying to unsubscribe for not existing key {(key).Color(Red)}!");
+                Debug.LogError($"Trying to unsubscribe for not existing key {key.Color(Red)}!");
             }
         }
 
@@ -100,11 +107,11 @@ namespace Core.GameEventSystem
             {
                 _signalCallbacks.Remove(key);
 
-                _debugger.Log(null, $"Signal {(key).Color(Red)} was absolutely unsubscribed!".Color(Red));
+                _debugger.Log(null, $"Signal {key.Color(Red)} was absolutely unsubscribed!".Color(Red));
             }
             else
             {
-                Debug.LogError($"Trying to unsubscribe for not existing key {(key).Color(Red)}!");
+                Debug.LogError($"Trying to unsubscribe for not existing key {key.Color(Red)}!");
             }
         }
     }

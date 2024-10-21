@@ -4,26 +4,16 @@ using UnityEngine;
 
 namespace Core
 {
-    public class CharacterManager : NetworkBehaviour
+    public abstract class CharacterManager : NetworkBehaviour
     {
+        [SerializeField] protected StateMachine _characterStateMachine;
+        [field: SerializeField] public Directions.MainDirection MainDirection { get; protected set; }
+        [field: SerializeField] public Directions.SecondaryDirection SecDirection { get; protected set; }
         public CharacterNetworkManager CharacterNetworkManager { get; private set; }
 
-        public CharacterMovementManager CharacterMovementManager { get; private set; }
+        protected CharacterMovementManager CharacterMovementManager { get; private set; }
 
-        public CharacterAnimatorManager CharacterAnimatorManager { get; private set; }
-
-
-        [SerializeField] private CharacterStateMachine _characterStateMachine;
-
-        public CharacterIdleState IdleState { get; private set; }
-
-        public CharacterMovementState MovementState { get; private set; }
-
-        [field:SerializeField] public Directions.MainDirection MainDirection { get; protected set; }
-
-        [field: SerializeField] public Directions.SecondaryDirection SecDirection { get; protected set; }
-
-        public event Action<Directions.MainDirection, Directions.SecondaryDirection> OnDirectionChanged;
+        protected CharacterAnimatorManager CharacterAnimatorManager { get; private set; }
 
         protected virtual void Awake()
         {
@@ -34,36 +24,14 @@ namespace Core
             CharacterMovementManager.OnMovementDirectionChanged += ChangeFaceDirection;
         }
 
-        protected virtual void Start()
-        {
-            IdleState = new(this, _characterStateMachine, null);
-            MovementState = new(this, _characterStateMachine, null);
-            _characterStateMachine.ChangeState(IdleState);
-        }
-
-        protected virtual void ChangeFaceDirection(Vector2 movementDirecction)
-        {
-            if (movementDirecction.x > 0)
-                MainDirection = Directions.MainDirection.Right;
-            else if (movementDirecction.x < 0)
-                MainDirection = Directions.MainDirection.Left;
-
-            if (movementDirecction.y > 0)
-                SecDirection = Directions.SecondaryDirection.Up;
-            else if (movementDirecction.y < 0)
-                SecDirection = Directions.SecondaryDirection.Down;
-            else if (movementDirecction.y == 0 && movementDirecction.x != 0)
-                SecDirection = Directions.SecondaryDirection.Down;
-
-            OnDirectionChanged?.Invoke(MainDirection, SecDirection);
-        }
+        protected virtual void Start() { }
 
         protected virtual void Update()
         {
             if (IsOwner)
             {
                 _characterStateMachine.CurrentState.FrameUpdate();
-                CharacterNetworkManager.NetworkPosition.Value = this.transform.position;
+                CharacterNetworkManager.NetworkPosition.Value = transform.position;
             }
             // IF THIS CHARACTER IS BEING CONTROLLED FROM ELSE WHERE, THEN ASSIGN ITS POSITION HERE LOCALY BY THE POSITION OF ITS NETWORK TRANSFORM
             else
@@ -79,10 +47,48 @@ namespace Core
             }
         }
 
+        protected void FixedUpdate()
+        {
+            if (IsOwner)
+            {
+                _characterStateMachine.CurrentState.PhysicsUpdate();
+            }
+        }
+
         public override void OnDestroy()
         {
             base.OnDestroy();
             CharacterMovementManager.OnMovementDirectionChanged -= ChangeFaceDirection;
+        }
+
+        public event Action<Directions.MainDirection, Directions.SecondaryDirection> OnDirectionChanged;
+
+        protected virtual void ChangeFaceDirection(Vector2 movementDirection)
+        {
+            if (movementDirection.x > 0)
+            {
+                MainDirection = Directions.MainDirection.Right;
+            }
+            else if (movementDirection.x < 0)
+            {
+                MainDirection = Directions.MainDirection.Left;
+            }
+
+            if (movementDirection.y > 0)
+            {
+                SecDirection = Directions.SecondaryDirection.Up;
+            }
+            else if (movementDirection.y < 0)
+            {
+                SecDirection = Directions.SecondaryDirection.Down;
+            }
+            else if (movementDirection.y == 0 && movementDirection.x != 0)
+
+            {
+                SecDirection = Directions.SecondaryDirection.Down;
+            }
+
+            OnDirectionChanged?.Invoke(MainDirection, SecDirection);
         }
     }
 }

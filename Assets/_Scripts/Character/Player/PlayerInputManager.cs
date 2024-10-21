@@ -6,19 +6,18 @@ namespace Core
 {
     public class PlayerInputManager : MonoBehaviour
     {
+        [field: SerializeField] public Vector2 MovementInput { get; private set; }
         [SerializeField] private BaseControls _baseControls;
 
-        [field: SerializeField] public Vector2 MovementInput { get; private set; }
+        private void Awake()
+        {
+            ReadPlayerInput();
+        }
 
         [Inject]
         public void Construct(BaseControls baseControls)
         {
             _baseControls = baseControls;
-        }
-
-        private void Awake()
-        {
-            ReadPlayerInput();
         }
 
         private void ReadPlayerInput()

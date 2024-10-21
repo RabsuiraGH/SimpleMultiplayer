@@ -333,39 +333,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  _characterStateMachine:
-    <CurrentState>k__BackingField:
-      _character: {fileID: 0}
-      _playerStateMachine:
-        <CurrentState>k__BackingField:
-          _character: {fileID: 0}
-          _playerStateMachine:
-            <CurrentState>k__BackingField:
-              _character: {fileID: 0}
-              _playerStateMachine:
-                <CurrentState>k__BackingField:
-                  _character: {fileID: 0}
-                  _playerStateMachine:
-                    <CurrentState>k__BackingField:
-                      _character: {fileID: 0}
-                  _eventBus:
-                    _debugger:
-                      _enableDebug: 1
-                      _defaultFontSize: 12
-              _eventBus:
-                _debugger:
-                  _enableDebug: 1
-                  _defaultFontSize: 12
-          _eventBus:
-            _debugger:
-              _enableDebug: 1
-              _defaultFontSize: 12
-      _eventBus:
-        _debugger:
-          _enableDebug: 1
-          _defaultFontSize: 12
   <MainDirection>k__BackingField: 1
   <SecDirection>k__BackingField: 1
+  <PlayerAnimationManager>k__BackingField: {fileID: 0}
 --- !u!114 &-4173806167024148138
 MonoBehaviour:
   m_ObjectHideFlags: 0

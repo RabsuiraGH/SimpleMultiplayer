@@ -1,34 +1,36 @@
-using System;
 using Core.GameEventSystem;
 using UnityEngine;
 
 namespace Core
 {
-    [Serializable]
-    public class CharacterState
+    public abstract class CharacterState : State
     {
-        [SerializeField] protected CharacterManager _character = null;
-        [SerializeField] protected CharacterStateMachine _playerStateMachine = null;
-        [SerializeField] protected EventBus _eventBus = null;
+        [SerializeField] protected readonly CharacterManager _character;
 
-        public CharacterState(CharacterManager character, CharacterStateMachine characterStateMachine, EventBus eventBus)
+        protected CharacterState(CharacterManager player, StateMachine stat, EventBus eventBus) : base(
+            stat, eventBus)
         {
-            _character = character;
-            _playerStateMachine = characterStateMachine;
-            _eventBus = eventBus;
+            _character = player;
         }
 
-        public virtual void EnterState()
-        { }
+        public override void EnterState()
+        {
+            base.EnterState();
+        }
 
-        public virtual void ExitState()
-        { }
+        public override void ExitState()
+        {
+            base.ExitState();
+        }
 
-        public virtual void FrameUpdate()
-        { }
+        public override void FrameUpdate()
+        {
+            base.FrameUpdate();
+        }
 
-        public virtual void PhysicsUpdate()
-        { }
-
+        public override void PhysicsUpdate()
+        {
+            base.PhysicsUpdate();
+        }
     }
 }

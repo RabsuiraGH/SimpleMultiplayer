@@ -10,18 +10,25 @@ namespace Core
 
         [SerializeField] protected Vector2 _movementDirection;
 
-        public event Action<Vector2> OnMovementDirectionChanged;
-
-        public bool IsMoving { get => _movementDirection.magnitude > 0; }
+        public bool IsMoving => _movementDirection.magnitude > 0;
 
         protected virtual void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
         }
 
+        protected virtual void Update() { }
+
+        protected virtual void FixedUpdate() { }
+
+        public event Action<Vector2> OnMovementDirectionChanged;
+
         protected void SetMovementDirection(Vector2 newDirection)
         {
-            if (_movementDirection.Equals(newDirection)) return;
+            if (_movementDirection.Equals(newDirection))
+            {
+                return;
+            }
 
             if (newDirection.Equals(Vector2.zero))
             {
@@ -37,23 +44,11 @@ namespace Core
                 _movementDirection = Vector2.zero;
             }
 
-            OnMovementDirectionChanged.Invoke(newDirection);
+            OnMovementDirectionChanged?.Invoke(newDirection);
         }
 
-        protected virtual void HandleAllMovement()
-        {
-        }
+        public virtual void HandleAllMovement() { }
 
-        protected virtual void ProceedMovement()
-        {
-        }
-
-        protected virtual void Update()
-        {
-        }
-
-        protected virtual void FixedUpdate()
-        {
-        }
+        protected virtual void ProceedMovement() { }
     }
 }

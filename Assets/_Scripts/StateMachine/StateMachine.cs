@@ -1,21 +1,20 @@
 using System;
 using UnityEngine;
-using UnityEngine.Playables;
 
 namespace Core
 {
     [Serializable]
-    public class CharacterStateMachine
+    public class StateMachine
     {
-        [field: SerializeField] public CharacterState CurrentState { get; set; } = null;
+        [field: SerializeField] public State CurrentState { get; set; }
 
-        public void Initialize(CharacterState startingState)
+        public void Initialize(State startingState)
         {
             CurrentState = startingState;
             CurrentState.EnterState();
         }
 
-        public void ChangeState(CharacterState newState)
+        public void ChangeState(State newState)
         {
             CurrentState.ExitState();
             CurrentState = newState;

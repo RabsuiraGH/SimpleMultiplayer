@@ -1,3 +1,4 @@
+using System;
 using static Core.Utility.DebugTool.DebugColorOptions;
 
 namespace Core.Utility.DebugTool
@@ -12,7 +13,9 @@ namespace Core.Utility.DebugTool
         public static string Color(this object myStr, HtmlColor color)
         {
             if (myStr is null)
+            {
                 return "";
+            }
 
             try
             {
@@ -20,7 +23,7 @@ namespace Core.Utility.DebugTool
             }
             catch
             {
-                throw new System.Exception("Cannot convert object to string!");
+                throw new Exception("Cannot convert object to string!");
             }
 
             if (color is HtmlColor.Bool)
@@ -29,7 +32,10 @@ namespace Core.Utility.DebugTool
                 {
                     color = result ? HtmlColor.Green : HtmlColor.Red;
                 }
-                else color = HtmlColor.Gray;
+                else
+                {
+                    color = HtmlColor.Gray;
+                }
             }
 
             string resultColor = Colors[color];

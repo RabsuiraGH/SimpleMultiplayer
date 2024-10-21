@@ -1,3 +1,4 @@
+using UnityEngine;
 using Zenject;
 
 namespace Core
@@ -5,20 +6,26 @@ namespace Core
     public class PlayerManager : CharacterManager
     {
         public PlayerMovementManager PlayerMovementManager { get; private set; }
-
         public PlayerInputManager InputManager { get; private set; }
+        [field: SerializeField] public PlayerIdleState IdleState { get; private set; }
+        [field: SerializeField] public PlayerMovementState MovementState { get; private set; }
 
-        [Inject]
-        public void Construct(PlayerInputManager inputManager)
-        {
-            InputManager = inputManager;
-        }
+        [field: SerializeField] public PlayerAnimatorManager PlayerAnimationManager { get; private set; }
 
         protected override void Awake()
         {
             base.Awake();
 
             PlayerMovementManager = GetComponent<PlayerMovementManager>();
+            PlayerAnimationManager = GetComponent<PlayerAnimatorManager>();
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            IdleState = new PlayerIdleState(this, _characterStateMachine, null);
+            MovementState = new PlayerMovementState(this, _characterStateMachine, null);
+            _characterStateMachine.Initialize(IdleState);
         }
 
         protected override void Update()
@@ -26,6 +33,12 @@ namespace Core
             base.Update();
 
             ReadAllInputs();
+        }
+
+        [Inject]
+        public void Construct(PlayerInputManager inputManager)
+        {
+            InputManager = inputManager;
         }
 
         private void ReadAllInputs()

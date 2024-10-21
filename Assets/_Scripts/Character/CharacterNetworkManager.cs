@@ -8,7 +8,7 @@ namespace Core
         [Header("POSITION")]
         [field: SerializeField]
         public NetworkVariable<Vector3> NetworkPosition { get; private set; } =
-    new(Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+            new(Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
         [field: SerializeField] public Vector3 NetworkPositionVelocity;
 

@@ -2,8 +2,8 @@
 {
     public class CallbackWithPriority
     {
-        public readonly int Priority;
         public readonly object Callback;
+        public readonly int Priority;
 
         public CallbackWithPriority(int priority, object callback)
         {

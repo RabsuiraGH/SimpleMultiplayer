@@ -4,13 +4,13 @@ namespace Core
     {
         public enum MainDirection
         {
-            Left, 
-            Right 
+            Left,
+            Right
         }
 
         public enum SecondaryDirection
-        { 
-            Up, 
+        {
+            Up,
             Down
         }
     }

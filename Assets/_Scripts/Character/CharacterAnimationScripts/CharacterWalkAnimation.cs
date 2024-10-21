@@ -1,5 +1,4 @@
 using Core.CustomAnimationSystem;
-using UnityEngine;
 
 namespace Core
 {

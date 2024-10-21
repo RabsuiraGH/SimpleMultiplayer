@@ -2,7 +2,5 @@ using UnityEngine;
 
 namespace Core
 {
-    public class Signal_SetInput : MonoBehaviour
-    {
-    }
+    public class Signal_SetInput : MonoBehaviour { }
 }
