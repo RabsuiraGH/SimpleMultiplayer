@@ -234,7 +234,12 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Prop_Shadows_0: -2697088033751233208
+      Prop_Shadows_1: 9183055533508974939
+      Prop_Shadows_2: -609597268600453399
+      Prop_Shadows_3: 1759630853793651827
+      Prop_Shadows_4: -1231176383112726250
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

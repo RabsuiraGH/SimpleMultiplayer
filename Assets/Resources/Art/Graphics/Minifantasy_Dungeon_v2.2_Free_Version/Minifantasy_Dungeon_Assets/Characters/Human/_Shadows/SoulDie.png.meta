@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      SoulDie_0: 7731722985765564606
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
