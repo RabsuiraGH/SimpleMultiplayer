@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: -4173806167024148138}
   - component: {fileID: -8065679244864840245}
   - component: {fileID: 3001004239120958150}
+  - component: {fileID: 1306230199908273727}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -88,7 +89,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: 4723107735738678597, guid: 7469a7716d6debd40a3450912730c195, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -340,7 +341,7 @@ MonoBehaviour:
   <CharacterMovementManager>k__BackingField: {fileID: 0}
   <CharacterAnimatorManager>k__BackingField: {fileID: 0}
   <CharacterStatsManager>k__BackingField: {fileID: 0}
-  <PlayerAnimationManager>k__BackingField: {fileID: 0}
+  <CharacterEffectsManager>k__BackingField: {fileID: 0}
 --- !u!114 &-4173806167024148138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -384,3 +385,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   _characterStatsSO: {fileID: 0}
+--- !u!114 &1306230199908273727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3098882890356814826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68379a2f526d9e44eaf43863c3ae739d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1

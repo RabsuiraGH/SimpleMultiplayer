@@ -17,7 +17,9 @@ namespace Core
 
         [field: SerializeField] protected CharacterAnimatorManager CharacterAnimatorManager { get; private set; }
 
-        [field: SerializeField] protected CharacterStatsManager CharacterStatsManager { get; private set; }
+        [field: SerializeField] public CharacterStatsManager CharacterStatsManager { get; private set; }
+
+        [field: SerializeField]public CharacterEffectsManager CharacterEffectsManager { get; private set; }
 
         protected virtual void Awake()
         {
@@ -25,6 +27,7 @@ namespace Core
             CharacterMovementManager = GetComponent<CharacterMovementManager>();
             CharacterAnimatorManager = GetComponent<CharacterAnimatorManager>();
             CharacterStatsManager = GetComponent<CharacterStatsManager>();
+            CharacterEffectsManager = GetComponent<CharacterEffectsManager>();
         }
 
         protected virtual void Start()
@@ -98,6 +101,11 @@ namespace Core
             }
 
             OnDirectionChanged?.Invoke(MainDirection, SecDirection);
+        }
+
+        public void ExecuteEffect(InstantEffectSO effect)
+        {
+            effect.ProcessEffect(this);
         }
     }
 }
