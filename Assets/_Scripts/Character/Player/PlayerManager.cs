@@ -8,8 +8,7 @@ namespace Core
     {
         public PlayerMovementManager PlayerMovementManager { get; private set; }
         public PlayerInputManager InputManager { get; private set; }
-        public PlayerIdleState IdleState { get; private set; }
-        public PlayerMovementState MovementState { get; private set; }
+
 
         public PlayerAnimatorManager PlayerAnimationManager { get; private set; }
 
@@ -20,10 +19,10 @@ namespace Core
         protected override void Awake()
         {
             base.Awake();
-
             PlayerMovementManager = GetComponent<PlayerMovementManager>();
             PlayerAnimationManager = GetComponent<PlayerAnimatorManager>();
             PlayerStatsManager = GetComponent<PlayerStatsManager>();
+            _characterStateMachine = GetComponent<CharacterStateMachine>();
         }
 
         protected override void Start()
@@ -31,9 +30,15 @@ namespace Core
             base.Start();
             IdleState = new PlayerIdleState(this, _characterStateMachine, null);
             MovementState = new PlayerMovementState(this, _characterStateMachine, null);
-            _characterStateMachine.Initialize(IdleState);
+            AttackState = new PlayerAttackState(this, _characterStateMachine, null);
+            _characterStateMachine.Initialize(IdleState, this);
 
-            PlayerUIManager.SetupUI(PlayerStatsManager);
+            if (IsOwner)
+            {
+                PlayerUIManager.SetupUI(PlayerStatsManager);
+
+                SubscribeInput();
+            }
         }
 
         protected override void Update()
@@ -58,6 +63,22 @@ namespace Core
         private void ReadMovementInput()
         {
             PlayerMovementManager.ReadMovementInput(InputManager.MovementInput);
+        }
+
+        private void SubscribeInput()
+        {
+            InputManager.OnAttackButtonPressed += CharacterAttackManager.PerformAttack;
+        }
+
+        private void UnsubscribeInput()
+        {
+            InputManager.OnAttackButtonPressed -= CharacterAttackManager.PerformAttack;
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            UnsubscribeInput();
         }
     }
 }

@@ -3,37 +3,58 @@ using UnityEngine;
 
 namespace Core
 {
-    public class PlayerIdleState : CharacterState
+    public class PlayerIdleState : PlayerState
     {
-        [SerializeField] private readonly CharacterIdleAnimation _idleAnimation = new();
-        [SerializeField] private readonly PlayerManager _player;
+        private readonly CharacterIdleAnimation _idleAnimation = new();
+        private readonly CharacterStateMachine _characterStateMachine;
 
-        public PlayerIdleState(PlayerManager player, StateMachine stat, EventBus eventBus) :
-            base(player, stat, eventBus)
+        public PlayerIdleState(PlayerManager player, CharacterStateMachine stateMachine, EventBus eventBus) :
+            base(player, stateMachine, eventBus)
         {
-            _player = player;
+            _characterStateMachine = stateMachine;
         }
 
         public override void EnterState()
         {
-            _idleAnimation.SetTags(_character.MainDirection.ToString(), _character.SecDirection.ToString());
+            base.EnterState();
+
+            _idleAnimation.SetTags(_player.MainDirection.ToString(), _player.SecDirection.ToString());
             _player.PlayerAnimationManager.PlayAnimation(_idleAnimation);
+
+            if (_player.IsOwner)
+                _player.CharacterAttackManager.OnAttackStart += EnterAttackStartState;
         }
 
-        public override void ExitState() { }
+        private void EnterAttackStartState()
+        {
+            _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.AttackState);
+        }
+
+
+        public override void ExitState()
+        {
+            base.ExitState();
+            if (_player.IsOwner)
+                _player.CharacterAttackManager.OnAttackStart -= EnterAttackStartState;
+        }
 
         public override void FrameUpdate()
         {
+            if (!_player.IsOwner) return;
+
             _player.PlayerMovementManager.HandleAllMovement();
 
-            if (_player.PlayerMovementManager.IsMoving)
+
+            if (_player.PlayerMovementManager.IsMoving && !_stateMachine.IsChangingState)
             {
-                _stateMachine.ChangeState(_player.MovementState);
+                _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.MovementState);
             }
         }
 
         public override void PhysicsUpdate()
         {
+            if (!_player.IsOwner) return;
+
             _player.PlayerMovementManager.HandleAllMovement();
         }
     }

@@ -7670,6 +7670,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _damageEffectOrigin: {fileID: 11400000, guid: 2b3e00e2564e74c4291ba7192a873471, type: 2}
   _damageEffect: {fileID: 0}
+  _alreadyDamaged: []
 --- !u!212 &1881664404
 SpriteRenderer:
   m_ObjectHideFlags: 0

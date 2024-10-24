@@ -7,7 +7,7 @@ namespace Core
 {
     public class CharacterEffectsManager : NetworkBehaviour
     {
-        public void ProcessInstantEffect(InstantEffectSO effect, CharacterManager target)
+        public static void ProcessInstantEffect(InstantEffectSO effect, CharacterManager target)
         {
             effect.ProcessEffect(target);
         }

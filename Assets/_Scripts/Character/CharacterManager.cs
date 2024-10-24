@@ -6,20 +6,25 @@ using UnityEngine;
 
 namespace Core
 {
-    public abstract class CharacterManager : NetworkBehaviour
+    public class CharacterManager : NetworkBehaviour
     {
-        [SerializeField] protected StateMachine _characterStateMachine;
+        [SerializeField] protected CharacterStateMachine _characterStateMachine;
+
+        public State IdleState { get; protected set; }
+        public State MovementState { get; protected set; }
+        public State AttackState { get; protected set; }
         [field: SerializeField] public Directions.MainDirection MainDirection { get; protected set; }
         [field: SerializeField] public Directions.SecondaryDirection SecDirection { get; protected set; }
         [field: SerializeField] public CharacterNetworkManager CharacterNetworkManager { get; private set; }
 
-        [field: SerializeField] protected CharacterMovementManager CharacterMovementManager { get; private set; }
+        [field: SerializeField] public CharacterMovementManager CharacterMovementManager { get; private set; }
 
-        [field: SerializeField] protected CharacterAnimatorManager CharacterAnimatorManager { get; private set; }
+        [field: SerializeField] public CharacterAnimatorManager CharacterAnimatorManager { get; private set; }
 
         [field: SerializeField] public CharacterStatsManager CharacterStatsManager { get; private set; }
 
-        [field: SerializeField]public CharacterEffectsManager CharacterEffectsManager { get; private set; }
+        [field: SerializeField] public CharacterEffectsManager CharacterEffectsManager { get; private set; }
+        [field: SerializeField] public CharacterAttackManager CharacterAttackManager { get; private set; }
 
         protected virtual void Awake()
         {
@@ -28,14 +33,21 @@ namespace Core
             CharacterAnimatorManager = GetComponent<CharacterAnimatorManager>();
             CharacterStatsManager = GetComponent<CharacterStatsManager>();
             CharacterEffectsManager = GetComponent<CharacterEffectsManager>();
+            CharacterAttackManager = GetComponent<CharacterAttackManager>();
+            _characterStateMachine = GetComponent<CharacterStateMachine>();
         }
 
         protected virtual void Start()
         {
-            CharacterMovementManager.OnMovementDirectionChanged += ChangeFaceDirection;
+            if (IsOwner)
+            {
+                CharacterMovementManager.OnMovementDirectionChanged += ChangeFaceDirection;
 
-            CharacterStatsManager.GetStats().MovementSpeed.CurrentValueReadonly
-                                 .Subscribe(newValue => CharacterMovementManager.UpdateMovementSpeed(newValue));
+                CharacterStatsManager.GetStats().MovementSpeed.CurrentValueReadonly
+                                     .Subscribe(newValue => CharacterMovementManager.UpdateMovementSpeed(newValue));
+            }
+
+            gameObject.name += CharacterNetworkManager.ObjectID.Value;
         }
 
         protected virtual void Update()
@@ -75,7 +87,7 @@ namespace Core
 
         public event Action<Directions.MainDirection, Directions.SecondaryDirection> OnDirectionChanged;
 
-        protected virtual void ChangeFaceDirection(Vector2 movementDirection)
+        public virtual void ChangeFaceDirection(Vector2 movementDirection)
         {
             if (movementDirection.x > 0)
             {

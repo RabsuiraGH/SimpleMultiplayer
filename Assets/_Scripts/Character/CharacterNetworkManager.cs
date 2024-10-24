@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -16,6 +17,11 @@ namespace Core
         // TIME TO SYNC POSITIONS
         [field: SerializeField] public float NetworkPositionSmoothTime { get; private set; } = 0.05f;
 
-        // TODO: IMPLEMENT NETWORK MOVEMENT VARIABLES 
+        public NetworkVariable<int> ObjectID { get; private set; }
+
+        protected void Awake()
+        {
+            ObjectID = new( gameObject.GetInstanceID());
+        }
     }
 }

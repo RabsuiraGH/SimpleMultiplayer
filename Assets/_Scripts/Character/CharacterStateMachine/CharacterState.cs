@@ -5,12 +5,12 @@ namespace Core
 {
     public abstract class CharacterState : State
     {
-        [SerializeField] protected readonly CharacterManager _character;
+        protected readonly CharacterManager _character;
 
-        protected CharacterState(CharacterManager player, StateMachine stat, EventBus eventBus) : base(
-            stat, eventBus)
+        protected CharacterState(CharacterManager character, StateMachine stateMachine, EventBus eventBus) : base(
+            stateMachine, eventBus)
         {
-            _character = player;
+            _character = character;
         }
 
         public override void EnterState()

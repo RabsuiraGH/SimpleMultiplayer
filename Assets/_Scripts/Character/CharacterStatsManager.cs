@@ -1,22 +1,35 @@
-using System;
+using R3;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Zenject;
 
 namespace Core
 {
     public class CharacterStatsManager : NetworkBehaviour
     {
-        [FormerlySerializedAs("_statsSO"), SerializeField]
-        protected CharacterBaseStatsSO _characterStatsSO;
+        [SerializeField] protected CharacterBaseStatsSO _characterStatsSO;
+
+        [SerializeField] public NetworkVariable<float> Health;
 
         public bool TryInitStats(CharacterBaseStatsSO stats, bool createNew = true)
         {
-            if (_characterStatsSO != null) return false;
+            if (_characterStatsSO != null)
+            {
+                return false;
+            }
 
-            if (createNew) _characterStatsSO = Instantiate(stats);
-            else _characterStatsSO = stats;
+            if (createNew)
+            {
+                _characterStatsSO = Instantiate(stats);
+            }
+            else
+            {
+                _characterStatsSO = stats;
+            }
+
+            // send request to change stat on server,
+            Health.OnValueChanged += _characterStatsSO.Health.ChangeCurrent;
+
+
             return true;
         }
 

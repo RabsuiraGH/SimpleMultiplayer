@@ -1,3 +1,4 @@
+using System;
 using Core.InputSystem;
 using UnityEngine;
 using Zenject;
@@ -7,6 +8,7 @@ namespace Core
     public class PlayerInputManager : MonoBehaviour
     {
         [field: SerializeField] public Vector2 MovementInput { get; private set; }
+        public event Action OnAttackButtonPressed;
         [SerializeField] private BaseControls _baseControls;
 
         private void Awake()
@@ -26,6 +28,7 @@ namespace Core
             _baseControls.Gameplay.Movement.performed += i => MovementInput = i.ReadValue<Vector2>();
 
             // READ PLAYER ATTACK INPUT
+            _baseControls.Gameplay.Attack.performed += i => OnAttackButtonPressed?.Invoke();
             // READ PLAYER CHARGE ATTACK INPUT
             // READ PLAYER JUMP INPUT
             // READ PLAYER USE ITEM INPUT

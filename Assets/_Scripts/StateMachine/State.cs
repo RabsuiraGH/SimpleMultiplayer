@@ -1,22 +1,25 @@
 using System;
 using Core.GameEventSystem;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Core
 {
-    [Serializable]
     public abstract class State
     {
-        [SerializeField] protected StateMachine _stateMachine;
-        [SerializeField] protected EventBus _eventBus;
+        protected StateMachine _stateMachine;
+        protected EventBus _eventBus;
 
-        public State(StateMachine stateMachine, EventBus eventBus)
+        protected State(StateMachine stateMachine, EventBus eventBus)
         {
             _stateMachine = stateMachine;
             _eventBus = eventBus;
         }
 
-        public virtual void EnterState() { }
+        public virtual void EnterState()
+        {
+            _stateMachine.IsChangingState = false;
+        }
 
         public virtual void ExitState() { }
 

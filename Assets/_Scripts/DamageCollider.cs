@@ -19,16 +19,18 @@ namespace Core
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            if (other.gameObject == this.gameObject) return;
             if (!other.TryGetComponent(out CharacterManager damageTarget)) return;
-            if(_alreadyDamaged.Contains(damageTarget)) return;
+            if (_alreadyDamaged.Contains(damageTarget)) return;
 
-            damageTarget.CharacterEffectsManager.ProcessInstantEffect(_damageEffectOrigin, damageTarget);
+            CharacterEffectsManager.ProcessInstantEffect(_damageEffectOrigin, damageTarget);
             _alreadyDamaged.Add(damageTarget);
         }
 
         private void OnTriggerExit2D(Collider2D other)
         {
             if (!other.TryGetComponent(out CharacterManager damageTarget)) return;
+
             if (_alreadyDamaged.Contains(damageTarget)) _alreadyDamaged.Remove((damageTarget));
         }
     }

@@ -3,42 +3,65 @@ using UnityEngine;
 
 namespace Core
 {
-    public class PlayerMovementState : CharacterState
+    public class PlayerMovementState : PlayerState
     {
-        [SerializeField] private readonly CharacterWalkAnimation _movingAnimation = new();
-        [SerializeField] private readonly PlayerManager _player;
+        private readonly CharacterWalkAnimation _movingAnimation = new();
+        private readonly CharacterStateMachine _characterStateMachine;
 
-        public PlayerMovementState(PlayerManager player, StateMachine characterStateMachine, EventBus eventBus)
-            : base(player, characterStateMachine, eventBus)
+        public PlayerMovementState(PlayerManager player, CharacterStateMachine stateMachine, EventBus eventBus)
+            : base(player, stateMachine, eventBus)
         {
-            _player = player;
+            _characterStateMachine = stateMachine;
         }
 
         public override void EnterState()
         {
-            _character.OnDirectionChanged += PlayAnimation;
-            PlayAnimation(_character.MainDirection, _character.SecDirection);
+            base.EnterState();
+
+            _player.OnDirectionChanged += PlayAnimation;
+            PlayAnimation(_player.MainDirection, _player.SecDirection);
+
+            if (_player.IsOwner)
+                _player.CharacterAttackManager.OnAttackStart += EnterAttackStartState;
         }
 
-        private void PlayAnimation(Directions.MainDirection direction1, Directions.SecondaryDirection direction2)
+        private void PlayAnimation(Directions.MainDirection mainDirection,
+                                   Directions.SecondaryDirection secondaryDirection)
         {
-            _movingAnimation.SetTags(_character.MainDirection.ToString(), _character.SecDirection.ToString());
+            _movingAnimation.SetTags(mainDirection.ToString(), secondaryDirection.ToString());
 
             _player.PlayerAnimationManager.PlayAnimation(_movingAnimation);
         }
 
-        public override void ExitState() { }
+        private void EnterAttackStartState()
+        {
+            _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.AttackState);
+        }
+
+        public override void ExitState()
+        {
+            base.ExitState();
+
+            _player.OnDirectionChanged -= PlayAnimation;
+
+            if (_player.IsOwner)
+                _player.CharacterAttackManager.OnAttackStart -= EnterAttackStartState;
+        }
 
         public override void FrameUpdate()
         {
-            if (!_player.PlayerMovementManager.IsMoving)
+            if (!_player.IsOwner) return;
+
+            if (!_player.PlayerMovementManager.IsMoving && !_stateMachine.IsChangingState)
             {
-                _stateMachine.ChangeState(_player.IdleState);
+                _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.IdleState);
             }
         }
 
         public override void PhysicsUpdate()
         {
+            if (!_player.IsOwner) return;
+
             _player.PlayerMovementManager.HandleAllMovement();
         }
     }

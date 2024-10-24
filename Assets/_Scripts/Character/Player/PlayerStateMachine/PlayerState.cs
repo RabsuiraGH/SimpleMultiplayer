@@ -3,22 +3,34 @@ using UnityEngine;
 
 namespace Core
 {
-    public abstract class PlayerState : State
+    public abstract class PlayerState : CharacterState
     {
-        [SerializeField] protected PlayerManager _player;
+        protected readonly PlayerManager _player;
 
-        public PlayerState(PlayerManager player, StateMachine playerStateMachine, EventBus eventBus)
-            : base(playerStateMachine, eventBus)
+        protected PlayerState(PlayerManager player, StateMachine playerStateMachine, EventBus eventBus)
+            : base(player, playerStateMachine, eventBus)
         {
             _player = player;
         }
 
-        public override void EnterState() { }
+        public override void EnterState()
+        {
+            base.EnterState();
+        }
 
-        public override void ExitState() { }
+        public override void ExitState()
+        {
+            base.ExitState();
+        }
 
-        public override void FrameUpdate() { }
+        public override void FrameUpdate()
+        {
+            base.FrameUpdate();
+        }
 
-        public override void PhysicsUpdate() { }
+        public override void PhysicsUpdate()
+        {
+            base.PhysicsUpdate();
+        }
     }
 }
