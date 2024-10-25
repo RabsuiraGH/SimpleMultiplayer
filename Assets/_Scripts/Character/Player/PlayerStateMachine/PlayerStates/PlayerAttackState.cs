@@ -6,12 +6,10 @@ namespace Core
     public class PlayerAttackState : PlayerState
     {
         private readonly CharacterAttackAnimation _attackAnimation = new();
-        private readonly CharacterStateMachine _characterStateMachine;
 
         public PlayerAttackState(PlayerManager player, CharacterStateMachine stat, EventBus eventBus) :
             base(player, stat, eventBus)
         {
-            _characterStateMachine = stat;
         }
 
         public override void EnterState()
@@ -32,7 +30,7 @@ namespace Core
 
             if (!_player.CharacterAttackManager.IsAttacking && !_stateMachine.IsChangingState)
             {
-                _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.IdleState);
+                _stateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.IdleState);
             }
         }
 

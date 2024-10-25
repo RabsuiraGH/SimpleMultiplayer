@@ -22,7 +22,15 @@ namespace Core
             _player.PlayerAnimationManager.PlayAnimation(_idleAnimation);
 
             if (_player.IsOwner)
+            {
                 _player.CharacterAttackManager.OnAttackStart += EnterAttackStartState;
+                _player.CharacterAttackManager.OnChargeAttackCharge += EnterChargeAttackState;
+            }
+        }
+
+        private void EnterChargeAttackState()
+        {
+            _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.ChargeAttackState);
         }
 
         private void EnterAttackStartState()
@@ -35,15 +43,17 @@ namespace Core
         {
             base.ExitState();
             if (_player.IsOwner)
+            {
                 _player.CharacterAttackManager.OnAttackStart -= EnterAttackStartState;
+                _player.CharacterAttackManager.OnChargeAttackCharge -= EnterChargeAttackState;
+            }
         }
 
         public override void FrameUpdate()
         {
             if (!_player.IsOwner) return;
 
-            _player.PlayerMovementManager.HandleAllMovement();
-
+            _player.PlayerMovementManager.UpdateMovementDirectionViaInput();
 
             if (_player.PlayerMovementManager.IsMoving && !_stateMachine.IsChangingState)
             {

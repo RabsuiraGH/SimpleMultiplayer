@@ -46,6 +46,15 @@ namespace Core.InputSystem
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ChargeAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""a92fbc06-35ac-46c9-9659-daf5ce382430"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -114,6 +123,17 @@ namespace Core.InputSystem
                     ""action"": ""Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e364c1e7-0e6f-43a2-adcb-68c23ab4dca7"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChargeAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -180,6 +200,7 @@ namespace Core.InputSystem
             m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
             m_Gameplay_Movement = m_Gameplay.FindAction("Movement", throwIfNotFound: true);
             m_Gameplay_Attack = m_Gameplay.FindAction("Attack", throwIfNotFound: true);
+            m_Gameplay_ChargeAttack = m_Gameplay.FindAction("ChargeAttack", throwIfNotFound: true);
             // Global
             m_Global = asset.FindActionMap("Global", throwIfNotFound: true);
             m_Global_Newaction = m_Global.FindAction("New action", throwIfNotFound: true);
@@ -256,12 +277,14 @@ namespace Core.InputSystem
         private List<IGameplayActions> m_GameplayActionsCallbackInterfaces = new List<IGameplayActions>();
         private readonly InputAction m_Gameplay_Movement;
         private readonly InputAction m_Gameplay_Attack;
+        private readonly InputAction m_Gameplay_ChargeAttack;
         public struct GameplayActions
         {
             private @BaseControls m_Wrapper;
             public GameplayActions(@BaseControls wrapper) { m_Wrapper = wrapper; }
             public InputAction @Movement => m_Wrapper.m_Gameplay_Movement;
             public InputAction @Attack => m_Wrapper.m_Gameplay_Attack;
+            public InputAction @ChargeAttack => m_Wrapper.m_Gameplay_ChargeAttack;
             public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -277,6 +300,9 @@ namespace Core.InputSystem
                 @Attack.started += instance.OnAttack;
                 @Attack.performed += instance.OnAttack;
                 @Attack.canceled += instance.OnAttack;
+                @ChargeAttack.started += instance.OnChargeAttack;
+                @ChargeAttack.performed += instance.OnChargeAttack;
+                @ChargeAttack.canceled += instance.OnChargeAttack;
             }
 
             private void UnregisterCallbacks(IGameplayActions instance)
@@ -287,6 +313,9 @@ namespace Core.InputSystem
                 @Attack.started -= instance.OnAttack;
                 @Attack.performed -= instance.OnAttack;
                 @Attack.canceled -= instance.OnAttack;
+                @ChargeAttack.started -= instance.OnChargeAttack;
+                @ChargeAttack.performed -= instance.OnChargeAttack;
+                @ChargeAttack.canceled -= instance.OnChargeAttack;
             }
 
             public void RemoveCallbacks(IGameplayActions instance)
@@ -400,6 +429,7 @@ namespace Core.InputSystem
         {
             void OnMovement(InputAction.CallbackContext context);
             void OnAttack(InputAction.CallbackContext context);
+            void OnChargeAttack(InputAction.CallbackContext context);
         }
         public interface IGlobalActions
         {

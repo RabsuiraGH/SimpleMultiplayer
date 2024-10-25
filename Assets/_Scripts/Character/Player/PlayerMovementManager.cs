@@ -4,7 +4,8 @@ namespace Core
 {
     public class PlayerMovementManager : CharacterMovementManager
     {
-
+        public Vector2 _movementInput { get; private set; }
+        [field: SerializeField] public bool HasPlayerInput => _movementInput.magnitude > 0;
         protected override void Awake()
         {
             base.Awake();
@@ -34,7 +35,12 @@ namespace Core
 
         public void ReadMovementInput(Vector2 movementInput)
         {
-            SetMovementDirection(movementInput);
+            _movementInput = movementInput;
+        }
+
+        public void UpdateMovementDirectionViaInput()
+        {
+            SetMovementDirection(_movementInput);
         }
 
         public override void HandleAllMovement()

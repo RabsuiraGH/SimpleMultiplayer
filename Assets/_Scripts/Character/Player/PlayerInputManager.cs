@@ -9,6 +9,10 @@ namespace Core
     {
         [field: SerializeField] public Vector2 MovementInput { get; private set; }
         public event Action OnAttackButtonPressed;
+        public event Action OnChargeAttackChargePressed;
+        public event Action OnChargeAttackReleasePressed;
+        public event Action OnChargeAttackChargeReleased;
+
         [SerializeField] private BaseControls _baseControls;
 
         private void Awake()
@@ -29,7 +33,16 @@ namespace Core
 
             // READ PLAYER ATTACK INPUT
             _baseControls.Gameplay.Attack.performed += i => OnAttackButtonPressed?.Invoke();
-            // READ PLAYER CHARGE ATTACK INPUT
+
+            // READ START CHARGE ATTACK INPUT
+            _baseControls.Gameplay.ChargeAttack.started += i =>OnChargeAttackChargePressed?.Invoke();
+
+            // READ INPUT TO PERFORM CHARGE ATTACK IF IT WILL BE CHARGED
+            _baseControls.Gameplay.Attack.performed += i => OnChargeAttackReleasePressed?.Invoke();
+
+            // CANCEL CHARGE OF CHARGED ATTACK INPUT
+            _baseControls.Gameplay.ChargeAttack.canceled += i => OnChargeAttackChargeReleased?.Invoke();
+
             // READ PLAYER JUMP INPUT
             // READ PLAYER USE ITEM INPUT
             // ETC

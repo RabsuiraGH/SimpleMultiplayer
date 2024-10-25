@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -11,11 +12,19 @@ namespace Core
         [SerializeField] private DamageCollider _damageCollider;
 
         [field: SerializeField] public bool IsAttacking { get; private set; } = false;
+        [field: SerializeField] public bool IsCharging { get; private set; } = false;
+
+        [field: SerializeField] public bool AttackCharged { get; private set; } = false;
+
 
         [SerializeField] private float _pushDistance;
         [SerializeField] private float _pushTime;
 
         public event Action OnAttackStart;
+        public event Action OnChargeAttackCharge;
+        public event Action OnChargeAttackPerform;
+        public event Action OnChargeAttackCancel;
+
 
 #if UNITY_EDITOR
         private Vector3 _attackPoint = Vector3.zero;
@@ -28,11 +37,9 @@ namespace Core
 
         public void StopAttackState()
         {
-            if (IsAttacking)
-            {
                 IsAttacking = false;
-            }
-
+                IsCharging = false;
+                AttackCharged = false;
             _damageCollider.gameObject.SetActive(false);
         }
 
@@ -45,8 +52,6 @@ namespace Core
         [ClientRpc]
         private void PerformAttackClientRpc(float mouseX, float mouseY)
         {
-            if (IsAttacking) return;
-
             StopAllCoroutines();
             IsAttacking = true;
 
@@ -73,7 +78,12 @@ namespace Core
 
         public virtual void PerformAttack()
         {
+            if (IsAttacking) return;
+
+
+            //
             Vector2 mouse = Directions.GetDirectionsViaMouse(_camera, transform.position, out _, out _);
+
             if (IsHost)
             {
                 PerformAttackClientRpc(mouse.x, mouse.y);
@@ -89,5 +99,42 @@ namespace Core
             Gizmos.DrawLine(this.transform.position, _attackPoint);
         }
 #endif
+        private IEnumerator ChargeAttackTimer()
+        {
+            float attackSpeed = _character.CharacterStatsManager.GetStats().AttackSpeed.CurrentValueReadonly.CurrentValue;
+            float chargeTime = _character.CharacterStatsManager.GetStats().ChargeAttackTime.CurrentValueReadonly.CurrentValue;
+
+            float timer = 0f;
+            while (timer < chargeTime)
+            {
+                timer += Time.deltaTime * attackSpeed;
+                yield return null;
+            }
+
+            AttackCharged = true;
+        }
+
+        public void StartChargeAttackCharge()
+        {
+            IsCharging = true;
+            OnChargeAttackCharge?.Invoke(); // change state
+
+            StopAllCoroutines();
+            StartCoroutine(ChargeAttackTimer());
+        }
+
+        public void TryPerformChargeAttack()
+        {
+            if(!AttackCharged) return;
+
+            IsAttacking = true;
+            IsCharging = false;
+            OnChargeAttackPerform?.Invoke();
+        }
+
+        public void CancelChargeAttack()
+        {
+            StopAttackState();
+        }
     }
 }

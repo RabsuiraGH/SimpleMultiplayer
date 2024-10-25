@@ -31,6 +31,7 @@ namespace Core
             IdleState = new PlayerIdleState(this, _characterStateMachine, null);
             MovementState = new PlayerMovementState(this, _characterStateMachine, null);
             AttackState = new PlayerAttackState(this, _characterStateMachine, null);
+            ChargeAttackState = new PlayerChargeAttackState(this, _characterStateMachine, null);
             _characterStateMachine.Initialize(IdleState, this);
 
             if (IsOwner)
@@ -67,12 +68,21 @@ namespace Core
 
         private void SubscribeInput()
         {
+            // BASIC ATTACK BEHAVIOURS
             InputManager.OnAttackButtonPressed += CharacterAttackManager.PerformAttack;
+
+            // CHARGE ATTACK INPUT BEHAVIOURS
+            InputManager.OnChargeAttackChargePressed += CharacterAttackManager.StartChargeAttackCharge;
+            InputManager.OnChargeAttackReleasePressed += CharacterAttackManager.TryPerformChargeAttack;
+            InputManager.OnChargeAttackChargeReleased += CharacterAttackManager.CancelChargeAttack;
         }
 
         private void UnsubscribeInput()
         {
             InputManager.OnAttackButtonPressed -= CharacterAttackManager.PerformAttack;
+            InputManager.OnChargeAttackChargePressed -= CharacterAttackManager.StartChargeAttackCharge;
+            InputManager.OnChargeAttackReleasePressed -= CharacterAttackManager.TryPerformChargeAttack;
+            InputManager.OnChargeAttackChargeReleased -= CharacterAttackManager.CancelChargeAttack;
         }
 
         public override void OnDestroy()

@@ -11,5 +11,8 @@ namespace Core
         [field: SerializeField] public StatParameter Damage { get; protected set; } = new(1, 5 );
         [field: SerializeField] public StatParameter Armor { get; protected set; } = new(-100, 0);
         [field: SerializeField] public StatParameter MovementSpeed { get; protected set; } = new(0.1f, 2f);
+
+        [field: SerializeField] public StatParameter AttackSpeed { get; protected set; } = new(0.1f, 1f);
+        [field: SerializeField] public StatParameter ChargeAttackTime { get; protected set; } = new(0.1f, 1f);
     }
 }

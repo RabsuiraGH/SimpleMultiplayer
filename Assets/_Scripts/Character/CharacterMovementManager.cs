@@ -30,6 +30,7 @@ namespace Core
 
         public event Action<Vector2> OnMovementDirectionChanged;
 
+
         protected void SetMovementDirection(Vector2 newDirection)
         {
             if (_movementDirection.Equals(newDirection))
@@ -58,6 +59,12 @@ namespace Core
         {
             _movementSpeed = speed;
         }
+        public void StopMovement()
+        {
+            _movementDirection = Vector2.zero;
+        }
+
+
         public IEnumerator MovePositionOverTime(Vector2 startPosition, Vector2 endPosition, float time)
         {
             float elapsedTime = 0f;

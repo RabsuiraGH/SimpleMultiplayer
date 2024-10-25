@@ -12,6 +12,7 @@ namespace Core
             IdleState,
             MovementState,
             AttackState,
+            ChargeAttackState
         }
 
         public override void Initialize(State startingState, NetworkBehaviour owner)
@@ -28,6 +29,7 @@ namespace Core
                 (int)CharacterStates.IdleState => _character.IdleState,
                 (int)CharacterStates.MovementState => _character.MovementState,
                 (int)CharacterStates.AttackState => _character.AttackState,
+                (int)CharacterStates.ChargeAttackState => _character.ChargeAttackState,
                 var _ => null
             };
         }

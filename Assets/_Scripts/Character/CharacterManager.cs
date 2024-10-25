@@ -9,10 +9,14 @@ namespace Core
     public class CharacterManager : NetworkBehaviour
     {
         [SerializeField] protected CharacterStateMachine _characterStateMachine;
-
+#if UNITY_EDITOR
+        [SerializeField] private string _currentState;
+#endif
         public State IdleState { get; protected set; }
         public State MovementState { get; protected set; }
         public State AttackState { get; protected set; }
+
+        public State ChargeAttackState { get; protected set; }
         [field: SerializeField] public Directions.MainDirection MainDirection { get; protected set; }
         [field: SerializeField] public Directions.SecondaryDirection SecDirection { get; protected set; }
         [field: SerializeField] public CharacterNetworkManager CharacterNetworkManager { get; private set; }
@@ -69,6 +73,9 @@ namespace Core
 
                 transform.position = CharacterNetworkManager.NetworkPosition.Value;
             }
+#if UNITY_EDITOR
+            _currentState = _characterStateMachine.CurrentState.GetType().ToString();
+#endif
         }
 
         protected void FixedUpdate()
