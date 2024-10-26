@@ -1,5 +1,89 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1755564813725901773
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3688958199661400792}
+  - component: {fileID: 8835857216729039110}
+  - component: {fileID: 4343652157411989021}
+  m_Layer: 0
+  m_Name: ChargeAttackDamageArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &3688958199661400792
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1755564813725901773}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1226622185037371180}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8835857216729039110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1755564813725901773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b286a3baa7686d4694a39d58f63a06f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _damageEffectOrigin: {fileID: 11400000, guid: 2b3e00e2564e74c4291ba7192a873471, type: 2}
+  _damageEffect: {fileID: 0}
+  _alreadyDamaged: []
+--- !u!58 &4343652157411989021
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1755564813725901773}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 1.2
 --- !u!1 &3098882890356814826
 GameObject:
   m_ObjectHideFlags: 0
@@ -47,6 +131,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4100555703585684187}
+  - {fileID: 3688958199661400792}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8964829419600943896
@@ -211,7 +296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2228905166
+  GlobalObjectIdHash: 3315737870
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -429,11 +514,14 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   _character: {fileID: 0}
   _damageCollider: {fileID: 2557385634502959150}
+  _chargeDamageCollider: {fileID: 8835857216729039110}
   <IsAttacking>k__BackingField: 0
   <IsCharging>k__BackingField: 0
   <AttackCharged>k__BackingField: 0
   _pushDistance: 0.3
   _pushTime: 0.1
+  _chargePushDistance: 0.5
+  _chargeTime: 0.3
   _player: {fileID: 0}
   _camera: {fileID: 0}
 --- !u!1 &5402270328618311296
@@ -448,7 +536,7 @@ GameObject:
   - component: {fileID: 2557385634502959150}
   - component: {fileID: 6327004881959616297}
   m_Layer: 0
-  m_Name: DamageArea
+  m_Name: BasicAttackDamageArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

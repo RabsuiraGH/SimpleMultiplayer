@@ -48,7 +48,7 @@ namespace Core.CustomAnimationSystem
 
             _animator.speed = animationSpeed;
 
-            if (!_animator.HasState(0, Animator.StringToHash(newState))) 
+            if (!_animator.HasState(0, Animator.StringToHash(newState)))
                 Debug.LogError(($"NO ANIMATION WITH NAME: {newState}"));
 
             _animator.Play(newState);
@@ -78,10 +78,30 @@ namespace Core.CustomAnimationSystem
             return _animatorTag + "_" + animation.AnimationName + animation.GetTag();
         }
 
-        protected virtual float GetClipLengthInSeconds(CustomAnimationBase animation)
+        protected virtual string GetCutStateString(CustomAnimationBase animation)
         {
-            return _animator.runtimeAnimatorController.animationClips
-                .FirstOrDefault(x => x.name == GetStateString(animation)).length;
+            return _animatorTag + "_" + animation.AnimationName;
+        }
+
+        public virtual float GetClipLengthInSeconds(CustomAnimationBase animation)
+        {
+            AnimationClip clip =
+                _animator.runtimeAnimatorController.animationClips.FirstOrDefault(
+                    x => x.name == GetStateString(animation));
+            if (clip != null) return clip.length;
+
+
+            clip = _animator.runtimeAnimatorController.animationClips.FirstOrDefault(
+                x => x.name.StartsWith(GetStateString(animation)));
+
+            if (clip != null) return clip.length;
+
+            clip = _animator.runtimeAnimatorController.animationClips.FirstOrDefault(
+                x => x.name.StartsWith(GetCutStateString(animation)));
+
+            if (clip != null) return clip.length;
+
+            return -1;
         }
     }
 }

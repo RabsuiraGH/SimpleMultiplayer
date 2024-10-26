@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using R3;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -9,14 +10,20 @@ namespace Core
     {
         [SerializeField] private CharacterManager _character;
         [SerializeField] protected DamageCollider _damageCollider;
+        [SerializeField] protected DamageCollider _chargeDamageCollider;
 
         [field: SerializeField] public bool IsAttacking { get; private set; } = false;
         [field: SerializeField] public bool IsCharging { get; private set; } = false;
 
         [field: SerializeField] public bool AttackCharged { get; private set; } = false;
 
+        [field: SerializeField] public float AttackSpeed { get; private set; }
+        [field: SerializeField] public float ChargeTime { get; private set; }
+
         [SerializeField] protected float _pushDistance;
         [SerializeField] protected float _pushTime;
+        [SerializeField] protected float _chargePushDistance;
+        [SerializeField] protected float _chargePushTime;
 
         public event Action OnAttackStart;
         public event Action OnChargeAttackCharge;
@@ -29,22 +36,32 @@ namespace Core
             _character = GetComponent<CharacterManager>();
         }
 
+        private void Start()
+        {
+            _character.CharacterStatsManager.GetStats().AttackSpeed.CurrentValueReadonly
+                      .Subscribe(val => AttackSpeed = val);
+
+            _character.CharacterStatsManager.GetStats().ChargeAttackTime.CurrentValueReadonly
+                      .Subscribe(val => ChargeTime = val);
+        }
+
         public void StopAttackState()
         {
             IsAttacking = false;
             IsCharging = false;
             AttackCharged = false;
             _damageCollider.gameObject.SetActive(false);
+            _chargeDamageCollider.gameObject.SetActive(false);
         }
 
         [ServerRpc]
-        protected void PerformAttackServerRPC(float attackPointX, float attackPointY)
+        protected void PerformBasicAttackServerRPC(float attackPointX, float attackPointY)
         {
-            PerformAttackClientRpc(attackPointX, attackPointY);
+            PerformBasicAttackClientRpc(attackPointX, attackPointY);
         }
 
         [ClientRpc]
-        protected void PerformAttackClientRpc(float attackPointX, float attackPointY)
+        protected void PerformBasicAttackClientRpc(float attackPointX, float attackPointY)
         {
             StopAllCoroutines();
             IsAttacking = true;
@@ -70,6 +87,37 @@ namespace Core
             _damageCollider.gameObject.SetActive(true);
         }
 
+        [ServerRpc]
+        protected void PerformChargeAttackServerRPC(float attackPointX, float attackPointY)
+        {
+            PerformChargeAttackClientRpc(attackPointX, attackPointY);
+        }
+
+        [ClientRpc]
+        protected void PerformChargeAttackClientRpc(float attackPointX, float attackPointY)
+        {
+            StopAllCoroutines();
+            IsAttacking = true;
+
+            Vector2 position = this.transform.position;
+            Vector2 mousePosition = new Vector2(attackPointX, attackPointY);
+            Vector2 attackDirection = (mousePosition - position).normalized;
+
+
+            // change direction of character before invoking anything that can play animation
+            _character.ChangeFaceDirectionViaMovement(attackDirection);
+
+            OnAttackStart?.Invoke();
+
+#if UNITY_EDITOR
+            _attackPoint = mousePosition;
+#endif
+
+            StartCoroutine(_character.CharacterMovementManager.MovePositionOverTime(
+                               position, position + attackDirection * _chargePushDistance, _chargePushTime));
+            _chargeDamageCollider.gameObject.SetActive(true);
+        }
+
         public virtual void PerformAttack()
         {
             if (IsAttacking) return;
@@ -82,15 +130,10 @@ namespace Core
 #endif
         private IEnumerator ChargeAttackTimer()
         {
-            float attackSpeed = _character.CharacterStatsManager.GetStats().AttackSpeed.CurrentValueReadonly
-                                          .CurrentValue;
-            float chargeTime = _character.CharacterStatsManager.GetStats().ChargeAttackTime.CurrentValueReadonly
-                                         .CurrentValue;
-
             float timer = 0f;
-            while (timer < chargeTime)
+            while (timer < ChargeTime)
             {
-                timer += Time.deltaTime * attackSpeed;
+                timer += Time.deltaTime * AttackSpeed;
                 yield return null;
             }
 

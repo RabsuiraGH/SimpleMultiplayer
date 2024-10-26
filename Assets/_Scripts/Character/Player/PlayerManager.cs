@@ -14,6 +14,7 @@ namespace Core
         public PlayerStatsManager PlayerStatsManager { get; private set; }
 
         public PlayerUIManager PlayerUIManager { get; private set; }
+        public PlayerAttackManager PlayerAttackManager { get; private set; }
 
         [Inject]
         public void Construct(PlayerInputManager inputManager, PlayerUIManager playerUIManager)
@@ -29,6 +30,8 @@ namespace Core
             PlayerMovementManager = GetComponent<PlayerMovementManager>();
             PlayerAnimationManager = GetComponent<PlayerAnimatorManager>();
             PlayerStatsManager = GetComponent<PlayerStatsManager>();
+            PlayerAttackManager = GetComponent<PlayerAttackManager>();
+
             _characterStateMachine = GetComponent<CharacterStateMachine>();
         }
 

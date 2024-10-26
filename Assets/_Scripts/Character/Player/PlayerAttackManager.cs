@@ -23,11 +23,25 @@ namespace Core
 
             if (IsHost)
             {
-                PerformAttackClientRpc(mouse.x, mouse.y);
+                if (!AttackCharged)
+                {
+                    PerformBasicAttackClientRpc(mouse.x, mouse.y);
+                }
+                else
+                {
+                    PerformChargeAttackClientRpc(mouse.x, mouse.y);
+                }
             }
             else
             {
-                PerformAttackServerRPC(mouse.x, mouse.y);
+                if (!AttackCharged)
+                {
+                    PerformBasicAttackServerRPC(mouse.x, mouse.y);
+                }
+                else
+                {
+                    PerformChargeAttackServerRPC(mouse.x, mouse.y);
+                }
             }
         }
     }
