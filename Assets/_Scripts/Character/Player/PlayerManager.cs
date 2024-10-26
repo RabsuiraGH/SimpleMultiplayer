@@ -6,19 +6,26 @@ namespace Core
 {
     public class PlayerManager : CharacterManager
     {
-        public PlayerMovementManager PlayerMovementManager { get; private set; }
         public PlayerInputManager InputManager { get; private set; }
-
+        public PlayerMovementManager PlayerMovementManager { get; private set; }
 
         public PlayerAnimatorManager PlayerAnimationManager { get; private set; }
 
-        protected PlayerStatsManager PlayerStatsManager { get; private set; }
+        public PlayerStatsManager PlayerStatsManager { get; private set; }
 
-        protected PlayerUIManager PlayerUIManager { get; private set; }
+        public PlayerUIManager PlayerUIManager { get; private set; }
+
+        [Inject]
+        public void Construct(PlayerInputManager inputManager, PlayerUIManager playerUIManager)
+        {
+            InputManager = inputManager;
+            PlayerUIManager = playerUIManager;
+        }
 
         protected override void Awake()
         {
             base.Awake();
+
             PlayerMovementManager = GetComponent<PlayerMovementManager>();
             PlayerAnimationManager = GetComponent<PlayerAnimatorManager>();
             PlayerStatsManager = GetComponent<PlayerStatsManager>();
@@ -28,11 +35,13 @@ namespace Core
         protected override void Start()
         {
             base.Start();
-            IdleState = new PlayerIdleState(this, _characterStateMachine, null);
-            MovementState = new PlayerMovementState(this, _characterStateMachine, null);
-            AttackState = new PlayerAttackState(this, _characterStateMachine, null);
-            ChargeAttackState = new PlayerChargeAttackState(this, _characterStateMachine, null);
-            _characterStateMachine.Initialize(IdleState, this);
+
+            // Setups State Machine
+            _characterStateMachine.IdleState = new PlayerIdleState(this, _characterStateMachine, null);
+            _characterStateMachine.MovementState = new PlayerMovementState(this, _characterStateMachine, null);
+            _characterStateMachine.AttackState = new PlayerAttackState(this, _characterStateMachine, null);
+            _characterStateMachine.ChargeAttackState = new PlayerChargeAttackState(this, _characterStateMachine, null);
+            _characterStateMachine.Initialize(_characterStateMachine.IdleState, this);
 
             if (IsOwner)
             {
@@ -46,24 +55,10 @@ namespace Core
         {
             base.Update();
 
-            ReadAllInputs();
-        }
-
-        [Inject]
-        public void Construct(PlayerInputManager inputManager, PlayerUIManager playerUIManager)
-        {
-            InputManager = inputManager;
-            PlayerUIManager = playerUIManager;
-        }
-
-        private void ReadAllInputs()
-        {
-            ReadMovementInput();
-        }
-
-        private void ReadMovementInput()
-        {
-            PlayerMovementManager.ReadMovementInput(InputManager.MovementInput);
+            if (IsOwner)
+            {
+                HandleAllInputs();
+            }
         }
 
         private void SubscribeInput()
@@ -73,15 +68,25 @@ namespace Core
 
             // CHARGE ATTACK INPUT BEHAVIOURS
             InputManager.OnChargeAttackChargePressed += CharacterAttackManager.StartChargeAttackCharge;
-            InputManager.OnChargeAttackReleasePressed += CharacterAttackManager.TryPerformChargeAttack;
+            InputManager.OnChargeAttackPerformPressed += CharacterAttackManager.TryPerformChargeAttack;
             InputManager.OnChargeAttackChargeReleased += CharacterAttackManager.CancelChargeAttack;
+        }
+
+        private void HandleAllInputs()
+        {
+            HandleMovementInput();
+        }
+
+        private void HandleMovementInput()
+        {
+            PlayerMovementManager.ApplyMovementInput(InputManager.MovementInput);
         }
 
         private void UnsubscribeInput()
         {
             InputManager.OnAttackButtonPressed -= CharacterAttackManager.PerformAttack;
             InputManager.OnChargeAttackChargePressed -= CharacterAttackManager.StartChargeAttackCharge;
-            InputManager.OnChargeAttackReleasePressed -= CharacterAttackManager.TryPerformChargeAttack;
+            InputManager.OnChargeAttackPerformPressed -= CharacterAttackManager.TryPerformChargeAttack;
             InputManager.OnChargeAttackChargeReleased -= CharacterAttackManager.CancelChargeAttack;
         }
 

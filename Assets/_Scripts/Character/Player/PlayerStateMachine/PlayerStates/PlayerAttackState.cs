@@ -15,6 +15,11 @@ namespace Core
         public override void EnterState()
         {
             base.EnterState();
+            PlayAttackAnimation();
+        }
+
+        private void PlayAttackAnimation()
+        {
             _attackAnimation.SetTags(_player.MainDirection.ToString(), _player.SecDirection.ToString());
             _player.PlayerAnimationManager.PlayAnimation(_attackAnimation);
         }

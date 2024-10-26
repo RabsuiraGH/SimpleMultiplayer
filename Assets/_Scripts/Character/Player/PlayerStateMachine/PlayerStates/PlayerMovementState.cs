@@ -18,18 +18,17 @@ namespace Core
         {
             base.EnterState();
 
-            _player.OnDirectionChanged += PlayAnimation;
-            PlayAnimation(_player.MainDirection, _player.SecDirection);
 
             if (_player.IsOwner)
             {
+                _player.OnDirectionChanged += PlayMovementAnimation;
                 _player.CharacterAttackManager.OnAttackStart += EnterAttackStartState;
                 _player.CharacterAttackManager.OnChargeAttackCharge += EnterChargeAttackState;
             }
         }
 
-        private void PlayAnimation(Directions.MainDirection mainDirection,
-                                   Directions.SecondaryDirection secondaryDirection)
+        private void PlayMovementAnimation(Directions.MainDirection mainDirection,
+                                           Directions.SecondaryDirection secondaryDirection)
         {
             _movingAnimation.SetTags(mainDirection.ToString(), secondaryDirection.ToString());
 
@@ -50,10 +49,10 @@ namespace Core
         {
             base.ExitState();
 
-            _player.OnDirectionChanged -= PlayAnimation;
 
             if (_player.IsOwner)
             {
+                _player.OnDirectionChanged -= PlayMovementAnimation;
                 _player.PlayerMovementManager.StopMovement();
                 _player.CharacterAttackManager.OnAttackStart -= EnterAttackStartState;
                 _player.CharacterAttackManager.OnChargeAttackCharge -= EnterChargeAttackState;

@@ -17,9 +17,7 @@ namespace Core
         public override void EnterState()
         {
             base.EnterState();
-
-            _idleAnimation.SetTags(_player.MainDirection.ToString(), _player.SecDirection.ToString());
-            _player.PlayerAnimationManager.PlayAnimation(_idleAnimation);
+            PlayIdleAnimation();
 
             if (_player.IsOwner)
             {
@@ -28,25 +26,10 @@ namespace Core
             }
         }
 
-        private void EnterChargeAttackState()
+        private void PlayIdleAnimation()
         {
-            _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.ChargeAttackState);
-        }
-
-        private void EnterAttackStartState()
-        {
-            _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.AttackState);
-        }
-
-
-        public override void ExitState()
-        {
-            base.ExitState();
-            if (_player.IsOwner)
-            {
-                _player.CharacterAttackManager.OnAttackStart -= EnterAttackStartState;
-                _player.CharacterAttackManager.OnChargeAttackCharge -= EnterChargeAttackState;
-            }
+            _idleAnimation.SetTags(_player.MainDirection.ToString(), _player.SecDirection.ToString());
+            _player.PlayerAnimationManager.PlayAnimation(_idleAnimation);
         }
 
         public override void FrameUpdate()
@@ -66,6 +49,27 @@ namespace Core
             if (!_player.IsOwner) return;
 
             _player.PlayerMovementManager.HandleAllMovement();
+        }
+
+        private void EnterAttackStartState()
+        {
+            _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.AttackState);
+        }
+
+        private void EnterChargeAttackState()
+        {
+            _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.ChargeAttackState);
+        }
+
+        public override void ExitState()
+        {
+            base.ExitState();
+
+            if (_player.IsOwner)
+            {
+                _player.CharacterAttackManager.OnAttackStart -= EnterAttackStartState;
+                _player.CharacterAttackManager.OnChargeAttackCharge -= EnterChargeAttackState;
+            }
         }
     }
 }

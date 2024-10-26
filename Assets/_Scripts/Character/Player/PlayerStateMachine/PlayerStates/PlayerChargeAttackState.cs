@@ -17,7 +17,7 @@ namespace Core
             base.EnterState();
             PlayChargeAnimation();
 
-            _player.CharacterAttackManager.OnChargeAttackPerform += PerformAttackAnimation;
+            _player.CharacterAttackManager.OnChargeAttackPerform += PlayPerformAttackAnimation;
         }
 
         private void PlayChargeAnimation()
@@ -27,7 +27,7 @@ namespace Core
             _player.PlayerAnimationManager.PlayAnimation(_chargeAttackAnimation);
         }
 
-        private void PerformAttackAnimation()
+        private void PlayPerformAttackAnimation()
         {
             _chargeAttackAnimation.SetTags(_chargeAttackAnimation.PerformedTag, _player.MainDirection.ToString(),
                                            _player.SecDirection.ToString());
@@ -37,7 +37,7 @@ namespace Core
         public override void ExitState()
         {
             base.ExitState();
-            _player.CharacterAttackManager.OnChargeAttackPerform -= PerformAttackAnimation;
+            _player.CharacterAttackManager.OnChargeAttackPerform -= PlayPerformAttackAnimation;
         }
 
         public override void FrameUpdate()

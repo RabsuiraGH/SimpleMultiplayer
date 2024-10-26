@@ -7,6 +7,11 @@ namespace Core
     {
         [SerializeField] private CharacterManager _character;
 
+        public State IdleState { get; set; }
+        public State MovementState { get; set; }
+        public State AttackState { get; set; }
+        public State ChargeAttackState { get; set; }
+
         public enum CharacterStates
         {
             IdleState,
@@ -26,10 +31,10 @@ namespace Core
         {
             return state switch
             {
-                (int)CharacterStates.IdleState => _character.IdleState,
-                (int)CharacterStates.MovementState => _character.MovementState,
-                (int)CharacterStates.AttackState => _character.AttackState,
-                (int)CharacterStates.ChargeAttackState => _character.ChargeAttackState,
+                (int)CharacterStates.IdleState => IdleState,
+                (int)CharacterStates.MovementState => MovementState,
+                (int)CharacterStates.AttackState => AttackState,
+                (int)CharacterStates.ChargeAttackState => ChargeAttackState,
                 var _ => null
             };
         }

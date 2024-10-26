@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Health>k__BackingField:
     <MaxValue>k__BackingField:
-      value: 20
+      value: 22
     <CurrentValue>k__BackingField:
       value: 20
     <MinValue>k__BackingField:
@@ -38,5 +38,19 @@ MonoBehaviour:
       value: 5
     <CurrentValue>k__BackingField:
       value: 5
+    <MinValue>k__BackingField:
+      value: 0.1
+  <AttackSpeed>k__BackingField:
+    <MaxValue>k__BackingField:
+      value: 1
+    <CurrentValue>k__BackingField:
+      value: 1
+    <MinValue>k__BackingField:
+      value: 0.1
+  <ChargeAttackTime>k__BackingField:
+    <MaxValue>k__BackingField:
+      value: 1
+    <CurrentValue>k__BackingField:
+      value: 1
     <MinValue>k__BackingField:
       value: 0.1

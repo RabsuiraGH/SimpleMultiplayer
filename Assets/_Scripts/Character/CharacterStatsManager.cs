@@ -9,8 +9,9 @@ namespace Core
         [SerializeField] protected CharacterBaseStatsSO _characterStatsSO;
 
         [SerializeField] public NetworkVariable<float> Health;
+        [SerializeField] public NetworkVariable<float> MaxHealth;
 
-        public bool TryInitStats(CharacterBaseStatsSO stats, bool createNew = true)
+        protected bool TryInitStats(CharacterBaseStatsSO stats, bool createNew = true)
         {
             if (_characterStatsSO != null)
             {
@@ -28,7 +29,7 @@ namespace Core
 
             // send request to change stat on server,
             Health.OnValueChanged += _characterStatsSO.Health.ChangeCurrent;
-
+            MaxHealth.OnValueChanged += _characterStatsSO.Health.ChangeMaximum;
 
             return true;
         }

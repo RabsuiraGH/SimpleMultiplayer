@@ -1,5 +1,4 @@
 using System;
-using Codice.CM.Client.Differences;
 using R3;
 using Unity.Netcode;
 using UnityEngine;
@@ -9,26 +8,24 @@ namespace Core
     public class CharacterManager : NetworkBehaviour
     {
         [SerializeField] protected CharacterStateMachine _characterStateMachine;
+
 #if UNITY_EDITOR
         [SerializeField] private string _currentState;
 #endif
-        public State IdleState { get; protected set; }
-        public State MovementState { get; protected set; }
-        public State AttackState { get; protected set; }
-
-        public State ChargeAttackState { get; protected set; }
         [field: SerializeField] public Directions.MainDirection MainDirection { get; protected set; }
         [field: SerializeField] public Directions.SecondaryDirection SecDirection { get; protected set; }
-        [field: SerializeField] public CharacterNetworkManager CharacterNetworkManager { get; private set; }
+        public event Action<Directions.MainDirection, Directions.SecondaryDirection> OnDirectionChanged;
 
-        [field: SerializeField] public CharacterMovementManager CharacterMovementManager { get; private set; }
+        public CharacterNetworkManager CharacterNetworkManager { get; private set; }
 
-        [field: SerializeField] public CharacterAnimatorManager CharacterAnimatorManager { get; private set; }
+        public CharacterMovementManager CharacterMovementManager { get; private set; }
 
-        [field: SerializeField] public CharacterStatsManager CharacterStatsManager { get; private set; }
+        public CharacterAnimatorManager CharacterAnimatorManager { get; private set; }
 
-        [field: SerializeField] public CharacterEffectsManager CharacterEffectsManager { get; private set; }
-        [field: SerializeField] public CharacterAttackManager CharacterAttackManager { get; private set; }
+        public CharacterStatsManager CharacterStatsManager { get; private set; }
+
+        public CharacterEffectsManager CharacterEffectsManager { get; private set; }
+        public CharacterAttackManager CharacterAttackManager { get; private set; }
 
         protected virtual void Awake()
         {
@@ -38,6 +35,7 @@ namespace Core
             CharacterStatsManager = GetComponent<CharacterStatsManager>();
             CharacterEffectsManager = GetComponent<CharacterEffectsManager>();
             CharacterAttackManager = GetComponent<CharacterAttackManager>();
+
             _characterStateMachine = GetComponent<CharacterStateMachine>();
         }
 
@@ -45,11 +43,12 @@ namespace Core
         {
             if (IsOwner)
             {
-                CharacterMovementManager.OnMovementDirectionChanged += ChangeFaceDirection;
-
-                CharacterStatsManager.GetStats().MovementSpeed.CurrentValueReadonly
-                                     .Subscribe(newValue => CharacterMovementManager.UpdateMovementSpeed(newValue));
+                CharacterMovementManager.OnMovementDirectionChanged += ChangeFaceDirectionViaMovement;
             }
+
+            // TODO: Maybe sub only if owner
+            CharacterStatsManager.GetStats().MovementSpeed.CurrentValueReadonly
+                                 .Subscribe(newValue => CharacterMovementManager.UpdateMovementSpeed(newValue));
 
             gameObject.name += CharacterNetworkManager.ObjectID.Value;
         }
@@ -60,19 +59,17 @@ namespace Core
             {
                 _characterStateMachine.CurrentState.FrameUpdate();
                 CharacterNetworkManager.NetworkPosition.Value = transform.position;
+                CharacterNetworkManager.NetworkMainDirection.Value = MainDirection;
+                CharacterNetworkManager.NetworkSecondaryDirection.Value = SecDirection;
             }
             // IF THIS CHARACTER IS BEING CONTROLLED FROM ELSE WHERE, THEN ASSIGN ITS POSITION HERE LOCALY BY THE POSITION OF ITS NETWORK TRANSFORM
             else
             {
-                // POSITION
-                /*                transform.position = Vector3.SmoothDamp
-                                    (transform.position,
-                                    CharacterNetworkManager.NetworkPosition.Value,
-                                    ref CharacterNetworkManager.NetworkPositionVelocity,
-                                    CharacterNetworkManager.NetworkPositionSmoothTime);*/
-
+                MainDirection = CharacterNetworkManager.NetworkMainDirection.Value;
+                SecDirection = CharacterNetworkManager.NetworkSecondaryDirection.Value;
                 transform.position = CharacterNetworkManager.NetworkPosition.Value;
             }
+
 #if UNITY_EDITOR
             _currentState = _characterStateMachine.CurrentState.GetType().ToString();
 #endif
@@ -86,15 +83,7 @@ namespace Core
             }
         }
 
-        public override void OnDestroy()
-        {
-            base.OnDestroy();
-            CharacterMovementManager.OnMovementDirectionChanged -= ChangeFaceDirection;
-        }
-
-        public event Action<Directions.MainDirection, Directions.SecondaryDirection> OnDirectionChanged;
-
-        public virtual void ChangeFaceDirection(Vector2 movementDirection)
+        public virtual void ChangeFaceDirectionViaMovement(Vector2 movementDirection)
         {
             if (movementDirection.x > 0)
             {
@@ -125,6 +114,15 @@ namespace Core
         public void ExecuteEffect(InstantEffectSO effect)
         {
             effect.ProcessEffect(this);
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            if (IsOwner)
+            {
+                CharacterMovementManager.OnMovementDirectionChanged -= ChangeFaceDirectionViaMovement;
+            }
         }
     }
 }

@@ -4,26 +4,16 @@ namespace Core
 {
     public class PlayerMovementManager : CharacterMovementManager
     {
-        public Vector2 _movementInput { get; private set; }
-        [field: SerializeField] public bool HasPlayerInput => _movementInput.magnitude > 0;
+        private Vector2 _movementInput;
+        public bool HasPlayerInput => _movementInput.magnitude > 0;
+
         protected override void Awake()
         {
             base.Awake();
         }
 
-        protected override void Update()
+        protected override void PerformMovement()
         {
-            base.Update();
-        }
-
-        protected override void FixedUpdate()
-        {
-        }
-
-        protected override void ProceedMovement()
-        {
-            base.ProceedMovement();
-
             if (_movementDirection.magnitude == 0)
             {
                 return;
@@ -33,7 +23,7 @@ namespace Core
             _rigidbody.MovePosition(newPosition);
         }
 
-        public void ReadMovementInput(Vector2 movementInput)
+        public void ApplyMovementInput(Vector2 movementInput)
         {
             _movementInput = movementInput;
         }
@@ -47,7 +37,15 @@ namespace Core
         {
             base.HandleAllMovement();
 
-            ProceedMovement();
+            PerformMovement();
+        }
+
+        protected override void Update()
+        {
+        }
+
+        protected override void FixedUpdate()
+        {
         }
     }
 }

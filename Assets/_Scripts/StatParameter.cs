@@ -23,6 +23,15 @@ namespace Core
             CurrentValue.Value = current;
         }
 
+        public void ChangeMaximum(float previous, float current)
+        {
+            MaxValue.Value = current;
+        }
+
+        public void ChangeMinimum(float previous, float current)
+        {
+            MinValue.Value = current;
+        }
 
         public StatParameter(float min, float max, float current = float.NaN)
         {
