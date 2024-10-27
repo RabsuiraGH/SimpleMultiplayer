@@ -20,6 +20,9 @@ namespace Core
 
         private void PlayAttackAnimation()
         {
+            _attackAnimation.ChangeAnimationSpeed(
+                _player.PlayerAttackManager.AttackSpeed /_player.PlayerAnimationManager.GetClipLengthInSeconds(_attackAnimation));
+
             _attackAnimation.SetTags(_player.MainDirection.ToString(), _player.SecDirection.ToString());
             _player.PlayerAnimationManager.PlayAnimation(_attackAnimation);
         }

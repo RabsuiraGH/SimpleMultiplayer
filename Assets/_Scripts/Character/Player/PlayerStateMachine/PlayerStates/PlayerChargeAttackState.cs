@@ -11,7 +11,8 @@ namespace Core
         private static float _chargeAnimationDuration = -1f;
         private float _chargeAnimationSpeed;
 
-        public PlayerChargeAttackState(PlayerManager player, CharacterStateMachine playerStateMachine, EventBus eventBus) : base(
+        public PlayerChargeAttackState(PlayerManager player, CharacterStateMachine playerStateMachine,
+                                       EventBus eventBus) : base(
             player, playerStateMachine, eventBus)
         {
             _characterStateMachine = playerStateMachine;
@@ -27,10 +28,12 @@ namespace Core
             _player.CharacterAttackManager.OnChargeAttackPerform += PlayPerformAttackAnimation;
             _player.CharacterAttackManager.OnBasicAttackPerform += EnterBasicAttackPerformState;
         }
+
         private void EnterBasicAttackPerformState()
         {
             _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.AttackState);
         }
+
         private void SetAnimationDurations()
         {
             if (_chargeAnimationDuration == -1f)
@@ -54,7 +57,9 @@ namespace Core
 
         private void PlayPerformAttackAnimation()
         {
-            _chargeAttackAnimation.ChangeAnimationSpeed(1f);
+            _chargeAttackAnimation.ChangeAnimationSpeed(
+                _player.PlayerAttackManager.AttackSpeed /
+                _player.PlayerAnimationManager.GetClipLengthInSeconds(_chargeAttackAnimation));
 
             _chargeAttackAnimation.SetTags(_chargeAttackAnimation.PerformedTag,
                                            _player.MainDirection.ToString(),
@@ -68,7 +73,6 @@ namespace Core
             base.ExitState();
             _player.CharacterAttackManager.OnChargeAttackPerform -= PlayPerformAttackAnimation;
             _player.CharacterAttackManager.OnBasicAttackPerform -= EnterBasicAttackPerformState;
-
         }
 
         public override void FrameUpdate()

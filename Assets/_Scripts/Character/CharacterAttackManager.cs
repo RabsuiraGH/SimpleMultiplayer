@@ -20,6 +20,8 @@ namespace Core
         [field: SerializeField] public float AttackSpeed { get; private set; }
         [field: SerializeField] public float ChargeTime { get; private set; }
 
+
+
         [SerializeField] protected float _pushDistance;
         [SerializeField] protected float _pushTime;
         [SerializeField] protected float _chargePushDistance;
