@@ -17,6 +17,7 @@ namespace Core
 
         public override void PerformAttack()
         {
+            base.PerformAttack();
             if (IsAttacking) return;
 
             Vector2 mouse = Directions.GetDirectionsViaMouse(_camera, transform.position, out _, out _);

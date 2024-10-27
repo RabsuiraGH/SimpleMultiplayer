@@ -518,10 +518,12 @@ MonoBehaviour:
   <IsAttacking>k__BackingField: 0
   <IsCharging>k__BackingField: 0
   <AttackCharged>k__BackingField: 0
+  <AttackSpeed>k__BackingField: 0
+  <ChargeTime>k__BackingField: 0
   _pushDistance: 0.3
   _pushTime: 0.1
   _chargePushDistance: 0.5
-  _chargeTime: 0.3
+  _chargePushTime: 0
   _player: {fileID: 0}
   _camera: {fileID: 0}
 --- !u!1 &5402270328618311296

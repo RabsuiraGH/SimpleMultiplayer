@@ -21,7 +21,7 @@ namespace Core
 
             if (_player.IsOwner)
             {
-                _player.CharacterAttackManager.OnAttackStart += EnterAttackStartState;
+                _player.CharacterAttackManager.OnBasicAttackPerform += EnterBasicAttackPerformState;
                 _player.CharacterAttackManager.OnChargeAttackCharge += EnterChargeAttackState;
             }
         }
@@ -51,7 +51,7 @@ namespace Core
             _player.PlayerMovementManager.HandleAllMovement();
         }
 
-        private void EnterAttackStartState()
+        private void EnterBasicAttackPerformState()
         {
             _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.AttackState);
         }
@@ -67,7 +67,7 @@ namespace Core
 
             if (_player.IsOwner)
             {
-                _player.CharacterAttackManager.OnAttackStart -= EnterAttackStartState;
+                _player.CharacterAttackManager.OnBasicAttackPerform -= EnterBasicAttackPerformState;
                 _player.CharacterAttackManager.OnChargeAttackCharge -= EnterChargeAttackState;
             }
         }

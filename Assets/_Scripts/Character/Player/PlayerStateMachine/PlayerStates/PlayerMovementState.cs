@@ -22,7 +22,7 @@ namespace Core
             if (_player.IsOwner)
             {
                 _player.OnDirectionChanged += PlayMovementAnimation;
-                _player.CharacterAttackManager.OnAttackStart += EnterAttackStartState;
+                _player.CharacterAttackManager.OnBasicAttackPerform += EnterBasicAttackPerformState;
                 _player.CharacterAttackManager.OnChargeAttackCharge += EnterChargeAttackState;
             }
         }
@@ -40,7 +40,7 @@ namespace Core
             _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.ChargeAttackState);
         }
 
-        private void EnterAttackStartState()
+        private void EnterBasicAttackPerformState()
         {
             _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.AttackState);
         }
@@ -54,7 +54,7 @@ namespace Core
             {
                 _player.OnDirectionChanged -= PlayMovementAnimation;
                 _player.PlayerMovementManager.StopMovement();
-                _player.CharacterAttackManager.OnAttackStart -= EnterAttackStartState;
+                _player.CharacterAttackManager.OnBasicAttackPerform -= EnterBasicAttackPerformState;
                 _player.CharacterAttackManager.OnChargeAttackCharge -= EnterChargeAttackState;
             }
         }

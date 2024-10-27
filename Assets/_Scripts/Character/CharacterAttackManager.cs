@@ -25,7 +25,7 @@ namespace Core
         [SerializeField] protected float _chargePushDistance;
         [SerializeField] protected float _chargePushTime;
 
-        public event Action OnAttackStart;
+        public event Action OnBasicAttackPerform;
         public event Action OnChargeAttackCharge;
         public event Action OnChargeAttackPerform;
 #if UNITY_EDITOR
@@ -46,6 +46,25 @@ namespace Core
         }
 
         public void StopAttackState()
+        {
+            if (IsHost)
+            {
+                StopAttackStateClientRpc();
+            }
+            else
+            {
+                StopAttackStateServerRpc();
+            }
+        }
+
+        [ServerRpc]
+        protected void StopAttackStateServerRpc()
+        {
+            StopAttackStateClientRpc();
+        }
+
+        [ClientRpc]
+        protected void StopAttackStateClientRpc()
         {
             IsAttacking = false;
             IsCharging = false;
@@ -74,7 +93,7 @@ namespace Core
             // change direction of character before invoking anything that can play animation
             _character.ChangeFaceDirectionViaMovement(attackDirection);
 
-            OnAttackStart?.Invoke();
+            OnBasicAttackPerform?.Invoke();
 
 #if UNITY_EDITOR
             _attackPoint = mousePosition;
@@ -107,7 +126,7 @@ namespace Core
             // change direction of character before invoking anything that can play animation
             _character.ChangeFaceDirectionViaMovement(attackDirection);
 
-            OnAttackStart?.Invoke();
+            OnChargeAttackPerform?.Invoke();
 
 #if UNITY_EDITOR
             _attackPoint = mousePosition;
@@ -121,6 +140,7 @@ namespace Core
         public virtual void PerformAttack()
         {
             if (IsAttacking) return;
+            IsCharging = false;
         }
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
@@ -142,6 +162,7 @@ namespace Core
 
         public void StartChargeAttackCharge()
         {
+            if (IsAttacking) return;
             IsCharging = true;
             OnChargeAttackCharge?.Invoke(); // change state
 
