@@ -10,8 +10,8 @@ namespace Core
         public override void ProcessEffect(CharacterManager character)
         {
             if (character == null) return;
-
-            character.CharacterStatsManager.GetStats().Health.CurrentValue.Value -= Damage;
+            if (!character.TryGetComponent(out IDamageable damageable)) return;
+            damageable.GetDamage(Damage);
         }
     }
 }

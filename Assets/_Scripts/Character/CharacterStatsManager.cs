@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Core
 {
-    public class CharacterStatsManager : NetworkBehaviour
+    public class CharacterStatsManager : NetworkBehaviour, IDamageable
     {
         [SerializeField] protected CharacterBaseStatsSO _characterStatsSO;
 
@@ -83,6 +83,12 @@ namespace Core
         public virtual CharacterBaseStatsSO GetStats()
         {
             return _characterStatsSO;
+        }
+
+        public void GetDamage(float initialDamage)
+        {
+            float resultDamage = initialDamage - Armor.Value;
+            Health.Value -= resultDamage;
         }
     }
 }
