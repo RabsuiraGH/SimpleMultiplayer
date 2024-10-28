@@ -155,6 +155,7 @@ namespace Core
             float timer = 0f;
             while (timer < ChargeTime)
             {
+                if(!IsCharging) yield break;    
                 timer += Time.deltaTime * AttackSpeed;
                 yield return null;
             }
