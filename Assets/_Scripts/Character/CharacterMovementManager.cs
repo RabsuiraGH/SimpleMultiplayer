@@ -15,6 +15,7 @@ namespace Core
         [SerializeField] private float _turnSpeed = 20f;
 
         public bool IsMoving => _movementDirection.magnitude > 0;
+        public bool IsJumping = false;
         public event Action<Vector2> OnMovementDirectionChanged;
 
         protected virtual void Awake()
@@ -54,6 +55,11 @@ namespace Core
         {
             _movementDirection = Vector2.zero;
         }
+        public virtual void StopJumping()
+        {
+            IsJumping = false;
+        }
+
 
         protected virtual void Update()
         {
@@ -120,6 +126,10 @@ namespace Core
             }
 
             transform.position = endPosition;
+        }
+
+        public virtual void PerformJump()
+        {
         }
     }
 }

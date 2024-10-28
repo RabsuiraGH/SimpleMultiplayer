@@ -42,6 +42,7 @@ namespace Core
             // Setups State Machine
             _characterStateMachine.IdleState = new PlayerIdleState(this, _characterStateMachine, null);
             _characterStateMachine.MovementState = new PlayerMovementState(this, _characterStateMachine, null);
+            _characterStateMachine.JumpState = new PlayerJumpState(this, _characterStateMachine, null);
             _characterStateMachine.AttackState = new PlayerAttackState(this, _characterStateMachine, null);
             _characterStateMachine.ChargeAttackState = new PlayerChargeAttackState(this, _characterStateMachine, null);
             _characterStateMachine.Initialize(_characterStateMachine.IdleState, this);
@@ -66,6 +67,9 @@ namespace Core
 
         private void SubscribeInput()
         {
+            // JUMP BEHAVIOURS
+            InputManager.OnJumpButtonPressed += PlayerMovementManager.PerformJump;
+
             // BASIC ATTACK BEHAVIOURS
             InputManager.OnAttackButtonPressed += CharacterAttackManager.PerformAttack;
 

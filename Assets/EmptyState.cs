@@ -15,6 +15,7 @@ namespace Core
             if (_character.IsOwner)
             {
                 _character.CharacterAttackManager.StopAttackState();
+                if(_character.CharacterMovementManager.IsJumping) _character.CharacterMovementManager.StopJumping();
             }
         }
 

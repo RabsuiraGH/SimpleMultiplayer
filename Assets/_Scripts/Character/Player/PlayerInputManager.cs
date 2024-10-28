@@ -12,6 +12,7 @@ namespace Core
         public event Action OnChargeAttackChargePressed;
         public event Action OnChargeAttackPerformPressed;
         public event Action OnChargeAttackChargeReleased;
+        public event Action OnJumpButtonPressed;
 
         [SerializeField] private BaseControls _baseControls;
 
@@ -44,6 +45,11 @@ namespace Core
             _baseControls.Gameplay.ChargeAttack.canceled += i => OnChargeAttackChargeReleased?.Invoke();
 
             // READ PLAYER JUMP INPUT
+            _baseControls.Gameplay.Jump.performed += i => OnJumpButtonPressed?.Invoke();
+
+            // ROLL PLAYER INPUT
+
+
             // READ PLAYER USE ITEM INPUT
             // ETC
         }

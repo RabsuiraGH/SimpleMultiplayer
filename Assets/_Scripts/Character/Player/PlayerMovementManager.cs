@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Core
@@ -21,6 +23,25 @@ namespace Core
 
             Vector2 newPosition = _rigidbody.position + _movementSpeed * Time.fixedDeltaTime * _movementDirection;
             _rigidbody.MovePosition(newPosition);
+        }
+
+        public override void PerformJump()
+        {
+            // TODO: ADD MAIN ACTION
+            if (IsJumping) return;
+            IsJumping = true;
+            MoveWhileJump(_movementDirection);
+
+        }
+
+        private async Task MoveWhileJump(Vector2 direction)
+        {
+            while (IsJumping)
+            {
+                Vector2 newPosition = _rigidbody.position + _movementSpeed * Time.fixedDeltaTime * direction;
+                _rigidbody.MovePosition(newPosition);
+                await Task.Yield();
+            }
         }
 
         public void ApplyMovementInput(Vector2 movementInput)
