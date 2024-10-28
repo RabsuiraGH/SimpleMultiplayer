@@ -11,6 +11,21 @@ namespace Core
         [SerializeField] public NetworkVariable<float> Health;
         [SerializeField] public NetworkVariable<float> MaxHealth;
 
+        [SerializeField] public NetworkVariable<float> Damage;
+        [SerializeField] public NetworkVariable<float> MaxDamage;
+
+        [SerializeField] public NetworkVariable<float> Armor;
+        [SerializeField] public NetworkVariable<float> MaxArmor;
+
+        [SerializeField] public NetworkVariable<float> MovementSpeed;
+        [SerializeField] public NetworkVariable<float> MaxMovementSpeed;
+
+        [SerializeField] public NetworkVariable<float> AttackSpeed;
+        [SerializeField] public NetworkVariable<float> MaxAttackSpeed;
+
+        [SerializeField] public NetworkVariable<float> ChargeAttackTime;
+        [SerializeField] public NetworkVariable<float> MaxChargeAttackTime;
+
         protected bool TryInitStats(CharacterBaseStatsSO stats, bool createNew = true)
         {
             if (_characterStatsSO != null)
@@ -18,20 +33,51 @@ namespace Core
                 return false;
             }
 
-            if (createNew)
-            {
-                _characterStatsSO = Instantiate(stats);
-            }
-            else
-            {
-                _characterStatsSO = stats;
-            }
+            _characterStatsSO = createNew ? Instantiate(stats) : stats;
 
-            // send request to change stat on server,
-            Health.OnValueChanged += _characterStatsSO.Health.ChangeCurrent;
-            MaxHealth.OnValueChanged += _characterStatsSO.Health.ChangeMaximum;
+            SubscribeToStatChanges(Health, MaxHealth, _characterStatsSO.Health);
+            SubscribeToStatChanges(Damage, MaxDamage, _characterStatsSO.Damage);
+            SubscribeToStatChanges(Armor, MaxArmor, _characterStatsSO.Armor);
+            SubscribeToStatChanges(MovementSpeed, MaxMovementSpeed, _characterStatsSO.MovementSpeed);
+            SubscribeToStatChanges(AttackSpeed, MaxAttackSpeed, _characterStatsSO.AttackSpeed);
+            SubscribeToStatChanges(ChargeAttackTime, MaxChargeAttackTime, _characterStatsSO.ChargeAttackTime);
 
             return true;
+        }
+
+        private void SubscribeToStatChanges(NetworkVariable<float> current,
+                                            NetworkVariable<float> max,
+                                            StatParameter statParameter)
+        {
+            current.OnValueChanged += statParameter.ChangeCurrent;
+            max.OnValueChanged += statParameter.ChangeMaximum;
+            current.Initialize(this);
+            max.Initialize(this);
+            current.Value = statParameter.CurrentValue.Value;
+            max.Value = statParameter.MaxValue.Value;
+        }
+
+        private void UnsubscribeFromStatChanges(NetworkVariable<float> current,
+                                                NetworkVariable<float> max,
+                                                StatParameter statParameter)
+        {
+            current.OnValueChanged -= statParameter.ChangeCurrent;
+            max.OnValueChanged -= statParameter.ChangeMaximum;
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            if (_characterStatsSO != null)
+            {
+                UnsubscribeFromStatChanges(Health, MaxHealth, _characterStatsSO.Health);
+                UnsubscribeFromStatChanges(Damage, MaxDamage, _characterStatsSO.Damage);
+                UnsubscribeFromStatChanges(Armor, MaxArmor, _characterStatsSO.Armor);
+                UnsubscribeFromStatChanges(MovementSpeed, MaxMovementSpeed, _characterStatsSO.MovementSpeed);
+                UnsubscribeFromStatChanges(AttackSpeed, MaxAttackSpeed, _characterStatsSO.AttackSpeed);
+                UnsubscribeFromStatChanges(ChargeAttackTime, MaxChargeAttackTime, _characterStatsSO.ChargeAttackTime);
+            }
         }
 
         public virtual CharacterBaseStatsSO GetStats()
