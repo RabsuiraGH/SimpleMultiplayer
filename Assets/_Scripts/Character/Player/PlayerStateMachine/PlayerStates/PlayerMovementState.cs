@@ -18,7 +18,6 @@ namespace Core
         {
             base.EnterState();
 
-
             if (_player.IsOwner)
             {
                 _player.OnDirectionChanged += PlayMovementAnimation;
@@ -65,8 +64,12 @@ namespace Core
 
             _player.PlayerMovementManager.UpdateMovementDirectionViaInput();
 
+            if (_player.PlayerMovementManager.IsJumping && !_stateMachine.IsChangingState)
+            {
+                _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.JumpState);
+            }
 
-            if (!_player.PlayerMovementManager.IsMoving && !_stateMachine.IsChangingState)
+            else if (!_player.PlayerMovementManager.IsMoving && !_stateMachine.IsChangingState)
             {
                 _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.IdleState);
             }

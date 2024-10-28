@@ -38,7 +38,12 @@ namespace Core
 
             _player.PlayerMovementManager.UpdateMovementDirectionViaInput();
 
-            if (_player.PlayerMovementManager.IsMoving && !_stateMachine.IsChangingState)
+            if (_player.PlayerMovementManager.IsJumping && !_stateMachine.IsChangingState)
+            {
+                _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.JumpState);
+            }
+
+            else if (_player.PlayerMovementManager.IsMoving && !_stateMachine.IsChangingState)
             {
                 _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.MovementState);
             }

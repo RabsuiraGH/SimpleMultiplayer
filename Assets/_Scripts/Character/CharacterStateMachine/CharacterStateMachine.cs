@@ -9,6 +9,7 @@ namespace Core
 
         public State IdleState { get; set; }
         public State MovementState { get; set; }
+        public State JumpState { get; set; }
         public State AttackState { get; set; }
         public State ChargeAttackState { get; set; }
 
@@ -16,8 +17,10 @@ namespace Core
         {
             IdleState,
             MovementState,
+            JumpState,
             AttackState,
             ChargeAttackState
+
         }
 
         public override void Initialize(State startingState, NetworkBehaviour owner)
@@ -33,6 +36,7 @@ namespace Core
             {
                 (int)CharacterStates.IdleState => IdleState,
                 (int)CharacterStates.MovementState => MovementState,
+                (int)CharacterStates.JumpState => JumpState,
                 (int)CharacterStates.AttackState => AttackState,
                 (int)CharacterStates.ChargeAttackState => ChargeAttackState,
                 var _ => null
@@ -58,6 +62,7 @@ namespace Core
         {
             CurrentState.ExitState();
             CurrentState = GetState(state);
+
             CurrentState.EnterState();
         }
 

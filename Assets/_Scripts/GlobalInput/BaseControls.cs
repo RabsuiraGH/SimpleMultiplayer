@@ -55,6 +55,15 @@ namespace Core.InputSystem
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""d9eb923f-59d2-44b4-9e6c-ab9550c15c21"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -134,6 +143,17 @@ namespace Core.InputSystem
                     ""action"": ""ChargeAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dc4535b2-5d67-493e-9b48-bc623ddf5d6c"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -201,6 +221,7 @@ namespace Core.InputSystem
             m_Gameplay_Movement = m_Gameplay.FindAction("Movement", throwIfNotFound: true);
             m_Gameplay_Attack = m_Gameplay.FindAction("Attack", throwIfNotFound: true);
             m_Gameplay_ChargeAttack = m_Gameplay.FindAction("ChargeAttack", throwIfNotFound: true);
+            m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
             // Global
             m_Global = asset.FindActionMap("Global", throwIfNotFound: true);
             m_Global_Newaction = m_Global.FindAction("New action", throwIfNotFound: true);
@@ -278,6 +299,7 @@ namespace Core.InputSystem
         private readonly InputAction m_Gameplay_Movement;
         private readonly InputAction m_Gameplay_Attack;
         private readonly InputAction m_Gameplay_ChargeAttack;
+        private readonly InputAction m_Gameplay_Jump;
         public struct GameplayActions
         {
             private @BaseControls m_Wrapper;
@@ -285,6 +307,7 @@ namespace Core.InputSystem
             public InputAction @Movement => m_Wrapper.m_Gameplay_Movement;
             public InputAction @Attack => m_Wrapper.m_Gameplay_Attack;
             public InputAction @ChargeAttack => m_Wrapper.m_Gameplay_ChargeAttack;
+            public InputAction @Jump => m_Wrapper.m_Gameplay_Jump;
             public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -303,6 +326,9 @@ namespace Core.InputSystem
                 @ChargeAttack.started += instance.OnChargeAttack;
                 @ChargeAttack.performed += instance.OnChargeAttack;
                 @ChargeAttack.canceled += instance.OnChargeAttack;
+                @Jump.started += instance.OnJump;
+                @Jump.performed += instance.OnJump;
+                @Jump.canceled += instance.OnJump;
             }
 
             private void UnregisterCallbacks(IGameplayActions instance)
@@ -316,6 +342,9 @@ namespace Core.InputSystem
                 @ChargeAttack.started -= instance.OnChargeAttack;
                 @ChargeAttack.performed -= instance.OnChargeAttack;
                 @ChargeAttack.canceled -= instance.OnChargeAttack;
+                @Jump.started -= instance.OnJump;
+                @Jump.performed -= instance.OnJump;
+                @Jump.canceled -= instance.OnJump;
             }
 
             public void RemoveCallbacks(IGameplayActions instance)
@@ -430,6 +459,7 @@ namespace Core.InputSystem
             void OnMovement(InputAction.CallbackContext context);
             void OnAttack(InputAction.CallbackContext context);
             void OnChargeAttack(InputAction.CallbackContext context);
+            void OnJump(InputAction.CallbackContext context);
         }
         public interface IGlobalActions
         {

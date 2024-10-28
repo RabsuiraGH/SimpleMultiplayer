@@ -12,7 +12,9 @@ namespace Core
             if (_character == null)
                 _character = animator.GetComponent<CharacterManager>();
 
-            if (_character.IsOwner)
+            _character.IsPerformingMainAction = false;
+            if (_character.CharacterMovementManager.IsJumping) _character.CharacterMovementManager.StopJumping();
+            if (_character.IsOwner) // TODO: REDURANT?
             {
                 _character.CharacterAttackManager.StopAttackState();
             }

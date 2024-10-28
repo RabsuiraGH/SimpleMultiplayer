@@ -1,15 +1,20 @@
+using System;
+using System.Threading.Tasks;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Core
 {
     public class PlayerMovementManager : CharacterMovementManager
     {
+        private PlayerManager _player;
         private Vector2 _movementInput;
         public bool HasPlayerInput => _movementInput.magnitude > 0;
 
         protected override void Awake()
         {
             base.Awake();
+            _player = GetComponent<PlayerManager>();
         }
 
         protected override void PerformMovement()
@@ -21,6 +26,44 @@ namespace Core
 
             Vector2 newPosition = _rigidbody.position + _movementSpeed * Time.fixedDeltaTime * _movementDirection;
             _rigidbody.MovePosition(newPosition);
+        }
+
+        public override void PerformJump()
+        {
+            if (IsJumping || _player.IsPerformingMainAction) return;
+            if (_player.IsHost)
+            {
+                PerformJumpClientRpc();
+            }
+            else
+            {
+                PerformJumpServerRpc();
+            }
+        }
+        [ClientRpc]
+        protected override void PerformJumpClientRpc()
+        {
+            _player.IsPerformingMainAction = true;
+            IsJumping = true;
+            if (IsOwner)
+            {
+                MoveWhileJump(_movementDirection);
+            }
+        }
+        [ServerRpc]
+        protected override void PerformJumpServerRpc()
+        {
+            PerformJumpClientRpc();
+        }
+
+        private async Task MoveWhileJump(Vector2 direction)
+        {
+            while (IsJumping)
+            {
+                Vector2 newPosition = _rigidbody.position + _movementSpeed * Time.fixedDeltaTime * direction;
+                _rigidbody.MovePosition(newPosition);
+                await Task.Yield();
+            }
         }
 
         public void ApplyMovementInput(Vector2 movementInput)

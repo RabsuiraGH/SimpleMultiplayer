@@ -7,6 +7,7 @@ namespace Core
 {
     public class CharacterMovementManager : NetworkBehaviour
     {
+        [SerializeField] private CharacterManager _character;
         [SerializeField] protected Rigidbody2D _rigidbody;
 
         [SerializeField] protected Vector2 _movementDirection;
@@ -15,11 +16,13 @@ namespace Core
         [SerializeField] private float _turnSpeed = 20f;
 
         public bool IsMoving => _movementDirection.magnitude > 0;
+        public bool IsJumping = false;
         public event Action<Vector2> OnMovementDirectionChanged;
 
         protected virtual void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
+            _character = GetComponent<CharacterManager>();
         }
 
         protected void SetMovementDirection(Vector2 newDirection)
@@ -50,9 +53,15 @@ namespace Core
         {
             _movementSpeed = speed;
         }
+
         public virtual void StopMovement()
         {
             _movementDirection = Vector2.zero;
+        }
+
+        public virtual void StopJumping()
+        {
+            IsJumping = false;
         }
 
         protected virtual void Update()
@@ -120,6 +129,32 @@ namespace Core
             }
 
             transform.position = endPosition;
+        }
+
+        public virtual void PerformJump()
+        {
+            if (IsJumping || _character.IsPerformingMainAction) return;
+            if (_character.IsHost)
+            {
+                PerformJumpClientRpc();
+            }
+            else
+            {
+                PerformJumpServerRpc();
+            }
+        }
+
+        [ClientRpc]
+        protected virtual void PerformJumpClientRpc()
+        {
+            _character.IsPerformingMainAction = true;
+            IsJumping = true;
+        }
+
+        [ServerRpc]
+        protected virtual void PerformJumpServerRpc()
+        {
+            PerformJumpClientRpc();
         }
     }
 }
