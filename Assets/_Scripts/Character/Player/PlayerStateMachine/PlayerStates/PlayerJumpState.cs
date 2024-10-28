@@ -34,6 +34,7 @@ namespace Core
         public override void FrameUpdate()
         {
             base.FrameUpdate();
+
             if (!_player.PlayerMovementManager.IsJumping && !_stateMachine.IsChangingState)
             {
                 _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.IdleState);

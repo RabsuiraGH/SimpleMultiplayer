@@ -17,10 +17,9 @@ namespace Core
 
         public override void PerformAttack()
         {
-            base.PerformAttack();
-            if (IsAttacking) return;
-
+            if (IsAttacking || _player.IsPerformingMainAction) return;
             Vector2 mouse = Directions.GetDirectionsViaMouse(_camera, transform.position, out _, out _);
+            _player.IsPerformingMainAction = true;
 
             if (IsHost)
             {

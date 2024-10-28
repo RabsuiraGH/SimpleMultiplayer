@@ -1,17 +1,20 @@
 using System;
 using System.Threading.Tasks;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Core
 {
     public class PlayerMovementManager : CharacterMovementManager
     {
+        private PlayerManager _player;
         private Vector2 _movementInput;
         public bool HasPlayerInput => _movementInput.magnitude > 0;
 
         protected override void Awake()
         {
             base.Awake();
+            _player = GetComponent<PlayerManager>();
         }
 
         protected override void PerformMovement()
@@ -27,11 +30,30 @@ namespace Core
 
         public override void PerformJump()
         {
-            // TODO: ADD MAIN ACTION
-            if (IsJumping) return;
+            if (IsJumping || _player.IsPerformingMainAction) return;
+            if (_player.IsHost)
+            {
+                PerformJumpClientRpc();
+            }
+            else
+            {
+                PerformJumpServerRpc();
+            }
+        }
+        [ClientRpc]
+        protected override void PerformJumpClientRpc()
+        {
+            _player.IsPerformingMainAction = true;
             IsJumping = true;
-            MoveWhileJump(_movementDirection);
-
+            if (IsOwner)
+            {
+                MoveWhileJump(_movementDirection);
+            }
+        }
+        [ServerRpc]
+        protected override void PerformJumpServerRpc()
+        {
+            PerformJumpClientRpc();
         }
 
         private async Task MoveWhileJump(Vector2 direction)

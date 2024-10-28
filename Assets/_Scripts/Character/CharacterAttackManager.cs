@@ -141,8 +141,9 @@ namespace Core
 
         public virtual void PerformAttack()
         {
-            if (IsAttacking) return;
+            if (IsAttacking || _character.IsPerformingMainAction) return;
             IsCharging = false;
+            _character.IsPerformingMainAction = true;
         }
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()

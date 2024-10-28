@@ -16,6 +16,8 @@ namespace Core
         [field: SerializeField] public Directions.SecondaryDirection SecDirection { get; protected set; }
         public event Action<Directions.MainDirection, Directions.SecondaryDirection> OnDirectionChanged;
 
+        public bool IsPerformingMainAction = false;
+
         public CharacterNetworkManager CharacterNetworkManager { get; private set; }
 
         public CharacterMovementManager CharacterMovementManager { get; private set; }
