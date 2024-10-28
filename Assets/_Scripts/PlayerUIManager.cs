@@ -14,5 +14,8 @@ namespace Core
             Observable.CombineLatest(stats.Health.CurrentValueReadonly, stats.Health.MaxValueReadonly)
                       .Subscribe(values => PlayerHealthBar.UpdateValue(values[0], values[1]));
         }
+
+
+
     }
 }

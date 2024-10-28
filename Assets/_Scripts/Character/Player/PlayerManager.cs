@@ -14,6 +14,7 @@ namespace Core
         public PlayerStatsManager PlayerStatsManager { get; private set; }
 
         public PlayerUIManager PlayerUIManager { get; private set; }
+        public PlayerTeamUIManager PlayerTeamUIManager { get; private set; }
         public PlayerAttackManager PlayerAttackManager { get; private set; }
 
         [Inject]
@@ -31,6 +32,8 @@ namespace Core
             PlayerAnimationManager = GetComponent<PlayerAnimatorManager>();
             PlayerStatsManager = GetComponent<PlayerStatsManager>();
             PlayerAttackManager = GetComponent<PlayerAttackManager>();
+
+            PlayerTeamUIManager = GetComponentInChildren<PlayerTeamUIManager>();
 
             _characterStateMachine = GetComponent<CharacterStateMachine>();
         }
@@ -52,6 +55,10 @@ namespace Core
                 PlayerUIManager.SetupUI(PlayerStatsManager);
 
                 SubscribeInput();
+            }
+            else
+            {
+                PlayerTeamUIManager.SetupTeamUI(PlayerStatsManager);
             }
         }
 
