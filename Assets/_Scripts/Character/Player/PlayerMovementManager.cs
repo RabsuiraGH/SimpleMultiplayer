@@ -28,9 +28,23 @@ namespace Core
             _rigidbody.MovePosition(newPosition);
         }
 
-        public override void PerformJump()
+        protected override void PerformJump()
+        {
+            base.PerformJump();
+            if (IsOwner)
+            {
+                MoveWhileJump(_movementDirection);
+            }
+        }
+
+        public override void PerformJumpRpc()
         {
             if (IsJumping || _player.IsPerformingMainAction) return;
+            if (!IsOwner) return;
+
+            PerformJump();
+
+
             if (_player.IsHost)
             {
                 PerformJumpClientRpc();
@@ -40,16 +54,14 @@ namespace Core
                 PerformJumpServerRpc();
             }
         }
+
         [ClientRpc]
         protected override void PerformJumpClientRpc()
         {
-            _player.IsPerformingMainAction = true;
-            IsJumping = true;
-            if (IsOwner)
-            {
-                MoveWhileJump(_movementDirection);
-            }
+            if (IsOwner) return;
+            PerformJump();
         }
+
         [ServerRpc]
         protected override void PerformJumpServerRpc()
         {

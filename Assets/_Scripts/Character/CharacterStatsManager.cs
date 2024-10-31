@@ -49,12 +49,21 @@ namespace Core
                                             NetworkVariable<float> max,
                                             StatParameter statParameter)
         {
+            if (IsHost)
+            {
+                current.Initialize(this);
+                max.Initialize(this);
+
+                current.Value = statParameter.CurrentValue.Value;
+                max.Value = statParameter.MaxValue.Value;
+            }
+
+
             current.OnValueChanged += statParameter.ChangeCurrent;
             max.OnValueChanged += statParameter.ChangeMaximum;
-            current.Initialize(this);
-            max.Initialize(this);
-            current.Value = statParameter.CurrentValue.Value;
-            max.Value = statParameter.MaxValue.Value;
+
+
+
         }
 
         private void UnsubscribeFromStatChanges(NetworkVariable<float> current,
@@ -87,8 +96,8 @@ namespace Core
 
         public void GetDamage(float initialDamage)
         {
-            float resultDamage = initialDamage - Armor.Value;
-            Health.Value -= resultDamage;
+                float resultDamage = initialDamage - Armor.Value;
+                Health.Value -= resultDamage;
         }
     }
 }

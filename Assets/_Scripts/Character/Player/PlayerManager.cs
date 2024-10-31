@@ -75,10 +75,10 @@ namespace Core
         private void SubscribeInput()
         {
             // JUMP BEHAVIOURS
-            InputManager.OnJumpButtonPressed += PlayerMovementManager.PerformJump;
+            InputManager.OnJumpButtonPressed += PlayerMovementManager.PerformJumpRpc;
 
             // BASIC ATTACK BEHAVIOURS
-            InputManager.OnAttackButtonPressed += CharacterAttackManager.PerformAttack;
+            InputManager.OnAttackButtonPressed += CharacterAttackManager.PerformAttackRpc;
 
             // CHARGE ATTACK INPUT BEHAVIOURS
             InputManager.OnChargeAttackChargePressed += CharacterAttackManager.StartChargeAttackCharge;
@@ -98,7 +98,7 @@ namespace Core
 
         private void UnsubscribeInput()
         {
-            InputManager.OnAttackButtonPressed -= CharacterAttackManager.PerformAttack;
+            InputManager.OnAttackButtonPressed -= CharacterAttackManager.PerformAttackRpc;
             InputManager.OnChargeAttackChargePressed -= CharacterAttackManager.StartChargeAttackCharge;
             InputManager.OnChargeAttackPerformPressed -= CharacterAttackManager.TryPerformChargeAttack;
             InputManager.OnChargeAttackChargeReleased -= CharacterAttackManager.CancelChargeAttack;

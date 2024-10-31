@@ -20,8 +20,6 @@ namespace Core
         [field: SerializeField] public float AttackSpeed { get; private set; }
         [field: SerializeField] public float ChargeTime { get; private set; }
 
-
-
         [SerializeField] protected float _pushDistance;
         [SerializeField] protected float _pushTime;
         [SerializeField] protected float _chargePushDistance;
@@ -31,7 +29,7 @@ namespace Core
         public event Action OnChargeAttackCharge;
         public event Action OnChargeAttackPerform;
 #if UNITY_EDITOR
-        private Vector3 _attackPoint = Vector3.zero;
+        private Vector3 d_attackPoint = Vector3.zero;
 #endif
         protected virtual void Awake()
         {
@@ -47,8 +45,23 @@ namespace Core
                       .Subscribe(val => ChargeTime = val);
         }
 
-        public void StopAttackState()
+        // Stop attack methods
+        private void StopAttackState()
         {
+            IsAttacking = false;
+            IsCharging = false;
+            AttackCharged = false;
+            _damageCollider.gameObject.SetActive(false);
+            _chargeDamageCollider.gameObject.SetActive(false);
+        }
+
+        public void StopAttackStateRpc()
+        {
+            if (!IsOwner) return;
+
+            StopAttackState();
+
+
             if (IsHost)
             {
                 StopAttackStateClientRpc();
@@ -68,21 +81,12 @@ namespace Core
         [ClientRpc]
         protected void StopAttackStateClientRpc()
         {
-            IsAttacking = false;
-            IsCharging = false;
-            AttackCharged = false;
-            _damageCollider.gameObject.SetActive(false);
-            _chargeDamageCollider.gameObject.SetActive(false);
+            if (IsOwner) return;
+            StopAttackState();
         }
 
-        [ServerRpc]
-        protected void PerformBasicAttackServerRPC(float attackPointX, float attackPointY)
-        {
-            PerformBasicAttackClientRpc(attackPointX, attackPointY);
-        }
-
-        [ClientRpc]
-        protected void PerformBasicAttackClientRpc(float attackPointX, float attackPointY)
+        // Basic attack methods
+        protected void PerformBasicAttack(float attackPointX, float attackPointY)
         {
             StopAllCoroutines();
             IsAttacking = true;
@@ -98,24 +102,39 @@ namespace Core
             OnBasicAttackPerform?.Invoke();
 
 #if UNITY_EDITOR
-            _attackPoint = mousePosition;
+            d_attackPoint = mousePosition;
 #endif
 
-            StartCoroutine(_character.CharacterMovementManager.MovePositionOverTime(
-                               position, position + attackDirection * _pushDistance, _pushTime));
-
             _damageCollider.transform.localPosition = attackDirection;
-            _damageCollider.gameObject.SetActive(true);
+
+            if (IsOwner)
+            {
+                StartCoroutine(_character.CharacterMovementManager.MovePositionOverTime(
+                                   position, position + attackDirection * _pushDistance, _pushTime));
+            }
+
+
+            if (IsHost)
+            {
+                _damageCollider.gameObject.SetActive(true);
+            }
         }
 
         [ServerRpc]
-        protected void PerformChargeAttackServerRPC(float attackPointX, float attackPointY)
+        protected void PerformBasicAttackServerRPC(float attackPointX, float attackPointY)
         {
-            PerformChargeAttackClientRpc(attackPointX, attackPointY);
+            PerformBasicAttackClientRpc(attackPointX, attackPointY);
         }
 
         [ClientRpc]
-        protected void PerformChargeAttackClientRpc(float attackPointX, float attackPointY)
+        protected void PerformBasicAttackClientRpc(float attackPointX, float attackPointY)
+        {
+            if (IsOwner) return;
+            PerformBasicAttack(attackPointX, attackPointY);
+        }
+
+        // Charge attack methods
+        protected void PerformChargeAttack(float attackPointX, float attackPointY)
         {
             StopAllCoroutines();
             IsAttacking = true;
@@ -131,15 +150,35 @@ namespace Core
             OnChargeAttackPerform?.Invoke();
 
 #if UNITY_EDITOR
-            _attackPoint = mousePosition;
+            d_attackPoint = mousePosition;
 #endif
 
-            StartCoroutine(_character.CharacterMovementManager.MovePositionOverTime(
-                               position, position + attackDirection * _chargePushDistance, _chargePushTime));
-            _chargeDamageCollider.gameObject.SetActive(true);
+            if (IsOwner)
+            {
+                StartCoroutine(_character.CharacterMovementManager.MovePositionOverTime(
+                                   position, position + attackDirection * _chargePushDistance, _chargePushTime));
+            }
+
+            if (IsHost)
+            {
+                _chargeDamageCollider.gameObject.SetActive(true);
+            }
         }
 
-        public virtual void PerformAttack()
+        [ServerRpc]
+        protected void PerformChargeAttackServerRPC(float attackPointX, float attackPointY)
+        {
+            PerformChargeAttackClientRpc(attackPointX, attackPointY);
+        }
+
+        [ClientRpc]
+        protected void PerformChargeAttackClientRpc(float attackPointX, float attackPointY)
+        {
+            if (IsOwner) return;
+            PerformChargeAttack(attackPointX, attackPointY);
+        }
+
+        public virtual void PerformAttackRpc()
         {
             if (IsAttacking || _character.IsPerformingMainAction) return;
             IsCharging = false;
@@ -148,7 +187,7 @@ namespace Core
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
-            Gizmos.DrawLine(this.transform.position, _attackPoint);
+            Gizmos.DrawLine(this.transform.position, d_attackPoint);
         }
 #endif
         private IEnumerator ChargeAttackTimer()
@@ -156,7 +195,7 @@ namespace Core
             float timer = 0f;
             while (timer < ChargeTime)
             {
-                if(!IsCharging) yield break;    
+                if (!IsCharging) yield break;
                 timer += Time.deltaTime * AttackSpeed;
                 yield return null;
             }

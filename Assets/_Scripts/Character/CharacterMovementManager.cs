@@ -131,9 +131,23 @@ namespace Core
             transform.position = endPosition;
         }
 
-        public virtual void PerformJump()
+        protected virtual void PerformJump()
+        {
+            _character.IsPerformingMainAction = true;
+            IsJumping = true;
+        }
+
+
+        public virtual void PerformJumpRpc()
         {
             if (IsJumping || _character.IsPerformingMainAction) return;
+
+            if(IsOwner)
+            {
+                PerformJump();
+            }
+
+
             if (_character.IsHost)
             {
                 PerformJumpClientRpc();
@@ -147,8 +161,8 @@ namespace Core
         [ClientRpc]
         protected virtual void PerformJumpClientRpc()
         {
-            _character.IsPerformingMainAction = true;
-            IsJumping = true;
+            if(IsOwner) return;
+            PerformJump();
         }
 
         [ServerRpc]

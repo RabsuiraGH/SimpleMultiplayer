@@ -14,8 +14,9 @@ namespace Core
             _playerStats = playerStats;
         }
 
-        private void Awake()
+        public override void OnNetworkSpawn()
         {
+            base.OnNetworkSpawn();
             TryInitStats(_playerStats);
         }
 

@@ -47,19 +47,32 @@ namespace Core
         {
             base.ChangeStateRPC(0);
 
-            if (IsHost)
+            if(IsOwner)
             {
-                ChangeStateClientRPC(state);
+                CurrentState.ExitState();
+                CurrentState = GetState(state);
+
+                CurrentState.EnterState();
+
+                if (IsHost)
+                {
+                    ChangeStateClientRPC(state);
+                }
+                else
+                {
+                    ChangeStateServerRPC(state);
+                }
             }
-            else
-            {
-                ChangeStateServerRPC(state);
-            }
+
+
+
+
         }
 
         [ClientRpc]
         public override void ChangeStateClientRPC(int state)
         {
+            if(IsOwner) return;
             CurrentState.ExitState();
             CurrentState = GetState(state);
 

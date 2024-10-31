@@ -19,8 +19,10 @@ namespace Core
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+
             if (other.gameObject == this.gameObject) return;
             if (!other.TryGetComponent(out CharacterManager damageTarget)) return;
+            if(!damageTarget.IsHost) return;
             if (_alreadyDamaged.Contains(damageTarget)) return;
 
             CharacterEffectsManager.ProcessInstantEffect(_damageEffectOrigin, damageTarget);
