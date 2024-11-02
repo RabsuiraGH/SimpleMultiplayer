@@ -45,7 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b286a3baa7686d4694a39d58f63a06f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _auto: 1
   _damageEffectOrigin: {fileID: 11400000, guid: 2b3e00e2564e74c4291ba7192a873471, type: 2}
   _damageEffect: {fileID: 0}
   _alreadyDamaged: []
@@ -542,8 +541,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   _character: {fileID: 0}
-  _damageCollider: {fileID: 2557385634502959150}
-  _chargeDamageCollider: {fileID: 8835857216729039110}
+  SingleDamageCollider: {fileID: 2557385634502959150}
+  ChargeSingleDamageCollider: {fileID: 8835857216729039110}
   <IsAttacking>k__BackingField: 0
   <IsCharging>k__BackingField: 0
   <AttackCharged>k__BackingField: 0
@@ -800,7 +799,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b286a3baa7686d4694a39d58f63a06f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _auto: 1
   _damageEffectOrigin: {fileID: 11400000, guid: 2b3e00e2564e74c4291ba7192a873471, type: 2}
   _damageEffect: {fileID: 0}
   _alreadyDamaged: []

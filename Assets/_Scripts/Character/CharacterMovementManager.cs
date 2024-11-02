@@ -19,6 +19,7 @@ namespace Core
         public bool IsMoving => _movementDirection.magnitude > 0;
         public bool IsJumping = false;
         public event Action<Vector2> OnMovementDirectionChanged;
+        public event Action<CharacterManager> OnJump;
 
         protected virtual void Awake()
         {
@@ -139,6 +140,7 @@ namespace Core
         {
             _character.IsPerformingMainAction = true;
             IsJumping = true;
+            OnJump?.Invoke(_character);
         }
 
 
