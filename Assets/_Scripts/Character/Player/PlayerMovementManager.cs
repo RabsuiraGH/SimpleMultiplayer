@@ -33,7 +33,9 @@ namespace Core
             base.PerformJump();
             if (IsOwner)
             {
+#pragma warning disable CS4014
                 MoveWhileJump(_movementDirection);
+#pragma warning restore CS4014
             }
         }
 

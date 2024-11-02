@@ -6,12 +6,10 @@ namespace Core
     public class PlayerIdleState : PlayerState
     {
         private readonly CharacterIdleAnimation _idleAnimation = new();
-        private readonly CharacterStateMachine _characterStateMachine;
 
         public PlayerIdleState(PlayerManager player, CharacterStateMachine stateMachine, EventBus eventBus) :
             base(player, stateMachine, eventBus)
         {
-            _characterStateMachine = stateMachine;
         }
 
         public override void EnterState()
@@ -34,23 +32,25 @@ namespace Core
 
         public override void FrameUpdate()
         {
+            base.FrameUpdate();
             if (!_player.IsOwner) return;
 
             _player.PlayerMovementManager.UpdateMovementDirectionViaInput();
 
             if (_player.PlayerMovementManager.IsJumping && !_stateMachine.IsChangingState)
             {
-                _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.JumpState);
+                _characterStateMachine.ChangeStateRPC(_characterStateMachine.JumpState);
             }
 
             else if (_player.PlayerMovementManager.IsMoving && !_stateMachine.IsChangingState)
             {
-                _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.MovementState);
+                _characterStateMachine.ChangeStateRPC(_characterStateMachine.MovementState);
             }
         }
 
         public override void PhysicsUpdate()
         {
+            base.PhysicsUpdate();
             if (!_player.IsOwner) return;
 
             _player.PlayerMovementManager.HandleAllMovement();
@@ -58,12 +58,12 @@ namespace Core
 
         private void EnterBasicAttackPerformState()
         {
-            _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.AttackState);
+            _characterStateMachine.ChangeStateRPC(_characterStateMachine.AttackState);
         }
 
         private void EnterChargeAttackState()
         {
-            _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.ChargeAttackState);
+            _characterStateMachine.ChangeStateRPC(_characterStateMachine.ChargeAttackState);
         }
 
         public override void ExitState()

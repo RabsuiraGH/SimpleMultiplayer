@@ -6,7 +6,6 @@ namespace Core
     public class PlayerChargeAttackState : PlayerState
     {
         private readonly CharacterChargeAttackAnimation _chargeAttackAnimation = new();
-        private readonly CharacterStateMachine _characterStateMachine;
 
         private static float _chargeAnimationDuration = -1f;
         private float _chargeAnimationSpeed;
@@ -15,7 +14,6 @@ namespace Core
                                        EventBus eventBus) : base(
             player, playerStateMachine, eventBus)
         {
-            _characterStateMachine = playerStateMachine;
         }
 
         public override void EnterState()
@@ -31,7 +29,7 @@ namespace Core
 
         private void EnterBasicAttackPerformState()
         {
-            _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.AttackState);
+            _characterStateMachine.ChangeStateRPC(_characterStateMachine.AttackState);
         }
 
         private void SetAnimationDurations()
@@ -43,7 +41,7 @@ namespace Core
 
         private void PlayChargeAnimation()
         {
-            _chargeAttackAnimation.SetTags(_chargeAttackAnimation.ChargeTag,
+            _chargeAttackAnimation.SetTags(CharacterChargeAttackAnimation.CHARGE_TAG,
                                            _player.MainDirection.ToString(),
                                            _player.SecDirection.ToString());
 
@@ -61,7 +59,7 @@ namespace Core
                 _player.PlayerAttackManager.AttackSpeed /
                 _player.PlayerAnimationManager.GetClipLengthInSeconds(_chargeAttackAnimation));
 
-            _chargeAttackAnimation.SetTags(_chargeAttackAnimation.PerformedTag,
+            _chargeAttackAnimation.SetTags(CharacterChargeAttackAnimation.PERFORMED_TAG,
                                            _player.MainDirection.ToString(),
                                            _player.SecDirection.ToString());
 
@@ -77,17 +75,20 @@ namespace Core
 
         public override void FrameUpdate()
         {
+            base.FrameUpdate();
+
             if (!_player.CharacterAttackManager.IsAttacking && !_stateMachine.IsChangingState)
             {
                 if (!_player.CharacterAttackManager.IsCharging)
                 {
-                    _stateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.IdleState);
+                    _stateMachine.ChangeStateRPC(_characterStateMachine.IdleState);
                 }
             }
         }
 
         public override void PhysicsUpdate()
         {
+            base.PhysicsUpdate();
         }
     }
 }

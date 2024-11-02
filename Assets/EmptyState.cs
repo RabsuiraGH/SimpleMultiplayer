@@ -19,14 +19,12 @@ namespace Core
                 _character.CharacterAttackManager.StopAttackStateRpc();
             }
 
-            Debug.Log(($"end"));
             _character.IsPerformingMainAction = false;
         }
 
         // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            Debug.Log(($"up"));
             if (_character.IsOwner)
             {
                 _character.CharacterAttackManager.StopAttackStateRpc();

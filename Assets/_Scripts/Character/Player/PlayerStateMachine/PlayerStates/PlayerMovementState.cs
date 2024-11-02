@@ -6,12 +6,10 @@ namespace Core
     public class PlayerMovementState : PlayerState
     {
         private readonly CharacterWalkAnimation _movingAnimation = new();
-        private readonly CharacterStateMachine _characterStateMachine;
 
         public PlayerMovementState(PlayerManager player, CharacterStateMachine stateMachine, EventBus eventBus)
             : base(player, stateMachine, eventBus)
         {
-            _characterStateMachine = stateMachine;
         }
 
         public override void EnterState()
@@ -36,12 +34,12 @@ namespace Core
 
         private void EnterChargeAttackState()
         {
-            _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.ChargeAttackState);
+            _characterStateMachine.ChangeStateRPC(_characterStateMachine.ChargeAttackState);
         }
 
         private void EnterBasicAttackPerformState()
         {
-            _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.AttackState);
+            _characterStateMachine.ChangeStateRPC(_characterStateMachine.AttackState);
         }
 
         public override void ExitState()
@@ -60,23 +58,25 @@ namespace Core
 
         public override void FrameUpdate()
         {
+            base.FrameUpdate();
             if (!_player.IsOwner) return;
 
             _player.PlayerMovementManager.UpdateMovementDirectionViaInput();
 
             if (_player.PlayerMovementManager.IsJumping && !_stateMachine.IsChangingState)
             {
-                _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.JumpState);
+                _characterStateMachine.ChangeStateRPC(_characterStateMachine.JumpState);
             }
 
             else if (!_player.PlayerMovementManager.IsMoving && !_stateMachine.IsChangingState)
             {
-                _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.IdleState);
+                _characterStateMachine.ChangeStateRPC(_characterStateMachine.IdleState);
             }
         }
 
         public override void PhysicsUpdate()
         {
+            base.PhysicsUpdate();
             if (!_player.IsOwner) return;
 
             _player.PlayerMovementManager.HandleAllMovement();

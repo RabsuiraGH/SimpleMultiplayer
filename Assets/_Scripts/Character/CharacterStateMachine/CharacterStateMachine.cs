@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -13,14 +15,15 @@ namespace Core
         public State AttackState { get; set; }
         public State ChargeAttackState { get; set; }
 
-        public enum CharacterStates
+        private Dictionary<CharacterStates, State> _states;
+
+        private enum CharacterStates
         {
             IdleState,
             MovementState,
             JumpState,
             AttackState,
             ChargeAttackState
-
         }
 
         public override void Initialize(State startingState, NetworkBehaviour owner)
@@ -28,51 +31,54 @@ namespace Core
             base.Initialize(startingState, owner);
             if (owner is CharacterManager character)
                 _character = character;
-        }
 
-        public override State GetState(int state)
-        {
-            return state switch
+            _states = new Dictionary<CharacterStates, State>
             {
-                (int)CharacterStates.IdleState => IdleState,
-                (int)CharacterStates.MovementState => MovementState,
-                (int)CharacterStates.JumpState => JumpState,
-                (int)CharacterStates.AttackState => AttackState,
-                (int)CharacterStates.ChargeAttackState => ChargeAttackState,
-                var _ => null
+                { CharacterStates.IdleState, IdleState },
+                { CharacterStates.MovementState, MovementState },
+                { CharacterStates.JumpState, JumpState },
+                { CharacterStates.AttackState, AttackState },
+                { CharacterStates.ChargeAttackState, ChargeAttackState }
             };
         }
 
-        public override void ChangeStateRPC(int state)
+        public override State GetState(int stateID)
         {
-            base.ChangeStateRPC(0);
+            return _states.TryGetValue((CharacterStates)stateID, out var state) ? state : null;
+        }
 
-            if(IsOwner)
+        public override int GetStateID(State state)
+        {
+            return (int)_states.FirstOrDefault(x => x.Value == state).Key;
+        }
+
+        // TODO: ALLOW TO USE STATE CLASS INSTEAD OF INT ENUM
+        public override void ChangeStateRPC(State state)
+        {
+            base.ChangeStateRPC(null);
+
+            if (IsOwner)
             {
                 CurrentState.ExitState();
-                CurrentState = GetState(state);
+                CurrentState = state;
 
                 CurrentState.EnterState();
 
                 if (IsHost)
                 {
-                    ChangeStateClientRPC(state);
+                    ChangeStateClientRPC(GetStateID(state));
                 }
                 else
                 {
-                    ChangeStateServerRPC(state);
+                    ChangeStateServerRPC(GetStateID(state));
                 }
             }
-
-
-
-
         }
 
         [ClientRpc]
         public override void ChangeStateClientRPC(int state)
         {
-            if(IsOwner) return;
+            if (IsOwner) return;
             CurrentState.ExitState();
             CurrentState = GetState(state);
 

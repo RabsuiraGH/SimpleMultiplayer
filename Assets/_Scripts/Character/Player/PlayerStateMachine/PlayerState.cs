@@ -7,7 +7,7 @@ namespace Core
     {
         protected readonly PlayerManager _player;
 
-        protected PlayerState(PlayerManager player, StateMachine playerStateMachine, EventBus eventBus)
+        protected PlayerState(PlayerManager player, CharacterStateMachine playerStateMachine, EventBus eventBus)
             : base(player, playerStateMachine, eventBus)
         {
             _player = player;

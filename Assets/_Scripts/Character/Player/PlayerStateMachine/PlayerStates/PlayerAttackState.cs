@@ -34,16 +34,19 @@ namespace Core
 
         public override void FrameUpdate()
         {
+            base.FrameUpdate();
             if (!_player.IsOwner) return;
+
 
             if (!_player.CharacterAttackManager.IsAttacking && !_stateMachine.IsChangingState)
             {
-                _stateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.IdleState);
+                _stateMachine.ChangeStateRPC(_characterStateMachine.IdleState);
             }
         }
 
         public override void PhysicsUpdate()
         {
+            base.PhysicsUpdate();
             if (!_player.IsOwner) return;
         }
     }

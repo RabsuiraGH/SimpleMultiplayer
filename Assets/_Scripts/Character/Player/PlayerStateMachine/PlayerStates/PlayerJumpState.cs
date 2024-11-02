@@ -6,12 +6,10 @@ namespace Core
     public class PlayerJumpState : PlayerState
     {
         private readonly CharacterJumpAnimation _jumpAnimation = new();
-        private readonly CharacterStateMachine _characterStateMachine;
 
         public PlayerJumpState(PlayerManager player, CharacterStateMachine playerStateMachine, EventBus eventBus) :
             base(player, playerStateMachine, eventBus)
         {
-            _characterStateMachine = playerStateMachine;
         }
 
         public override void EnterState()
@@ -37,7 +35,7 @@ namespace Core
 
             if (!_player.PlayerMovementManager.IsJumping && !_stateMachine.IsChangingState)
             {
-                _characterStateMachine.ChangeStateRPC((int)CharacterStateMachine.CharacterStates.IdleState);
+                _characterStateMachine.ChangeStateRPC(_characterStateMachine.IdleState);
             }
         }
 

@@ -6,11 +6,13 @@ namespace Core
     public abstract class CharacterState : State
     {
         protected readonly CharacterManager _character;
+        protected readonly CharacterStateMachine _characterStateMachine;
 
-        protected CharacterState(CharacterManager character, StateMachine stateMachine, EventBus eventBus) : base(
+        protected CharacterState(CharacterManager character, CharacterStateMachine stateMachine, EventBus eventBus) : base(
             stateMachine, eventBus)
         {
             _character = character;
+            _characterStateMachine = stateMachine;
         }
 
         public override void EnterState()

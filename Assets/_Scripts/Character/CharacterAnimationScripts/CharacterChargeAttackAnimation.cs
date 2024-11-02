@@ -9,8 +9,8 @@ namespace Core
         public override string AnimationName { get; protected set; } = "ChargeAttack";
         protected override string AnimationAdditionalTag { get; set; } = string.Empty;
 
-        public readonly string ChargeTag = "Charge";
-        public readonly string IdleTag = "Idle";
-        public readonly string PerformedTag = "Perform";
+        public const string CHARGE_TAG = "Charge";
+        public const string IDLE_TAG = "Idle";
+        public const string PERFORMED_TAG = "Perform";
     }
 }

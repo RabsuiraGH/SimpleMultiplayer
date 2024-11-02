@@ -19,14 +19,9 @@ namespace Core
             CurrentState.EnterState();
         }
 
-        public virtual void ChangeStateRPC(int state)
+        public virtual void ChangeStateRPC(State state)
         {
             IsChangingState = true;
-        }
-
-        public virtual State GetState(int state)
-        {
-            throw new NotImplementedException();
         }
 
         [ClientRpc]
@@ -39,7 +34,16 @@ namespace Core
         public virtual void ChangeStateServerRPC(int state)
         {
             throw new NotImplementedException();
+        }
 
+        public virtual State GetState(int stateID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual int GetStateID(State state)
+        {
+            throw new NotImplementedException();
         }
     }
 }
