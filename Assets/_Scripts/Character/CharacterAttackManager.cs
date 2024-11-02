@@ -9,8 +9,8 @@ namespace Core
     public class CharacterAttackManager : NetworkBehaviour
     {
         [SerializeField] private CharacterManager _character;
-        [SerializeField] protected DamageCollider _damageCollider;
-        [SerializeField] protected DamageCollider _chargeDamageCollider;
+        [SerializeField] protected SingleDamageCollider SingleDamageCollider;
+        [SerializeField] protected SingleDamageCollider ChargeSingleDamageCollider;
 
         [field: SerializeField] public bool IsAttacking { get; private set; } = false;
         [field: SerializeField] public bool IsCharging { get; private set; } = false;
@@ -51,8 +51,8 @@ namespace Core
             IsAttacking = false;
             IsCharging = false;
             AttackCharged = false;
-            _damageCollider.gameObject.SetActive(false);
-            _chargeDamageCollider.gameObject.SetActive(false);
+            SingleDamageCollider.gameObject.SetActive(false);
+            ChargeSingleDamageCollider.gameObject.SetActive(false);
         }
 
         public void StopAttackStateRpc()
@@ -105,7 +105,7 @@ namespace Core
             d_attackPoint = mousePosition;
 #endif
 
-            _damageCollider.transform.localPosition = attackDirection;
+            SingleDamageCollider.transform.localPosition = attackDirection;
 
             if (IsOwner)
             {
@@ -116,7 +116,7 @@ namespace Core
 
             if (IsHost)
             {
-                _damageCollider.gameObject.SetActive(true);
+                SingleDamageCollider.gameObject.SetActive(true);
             }
         }
 
@@ -161,7 +161,7 @@ namespace Core
 
             if (IsHost)
             {
-                _chargeDamageCollider.gameObject.SetActive(true);
+                ChargeSingleDamageCollider.gameObject.SetActive(true);
             }
         }
 

@@ -5,9 +5,8 @@ using UnityEngine.Serialization;
 
 namespace Core
 {
-    public class DamageCollider : MonoBehaviour
+    public class SingleDamageCollider : MonoBehaviour
     {
-        [SerializeField] private bool _auto = true;
         [SerializeField] private CharacterDamageEffectSO _damageEffectOrigin;
         [SerializeField] private CharacterDamageEffectSO _damageEffect;
 
@@ -18,25 +17,14 @@ namespace Core
             _damageEffect = Instantiate(_damageEffectOrigin);
         }
 
-        public void PerformDamageManually(CharacterManager damageTarget)
-        {
-            if(!damageTarget.IsHost) return;
-            if (_alreadyDamaged.Contains(damageTarget)) return;
-
-            CharacterEffectsManager.ProcessInstantEffect(_damageEffectOrigin, damageTarget);
-            _alreadyDamaged.Add(damageTarget);
-        }
-
-
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if(!_auto) return;
             if (other.gameObject == this.gameObject) return;
             if (!other.TryGetComponent(out CharacterManager damageTarget)) return;
-            if(!damageTarget.IsHost) return;
+            if (!damageTarget.IsHost) return;
             if (_alreadyDamaged.Contains(damageTarget)) return;
 
-            CharacterEffectsManager.ProcessInstantEffect(_damageEffectOrigin, damageTarget);
+            CharacterEffectsManager.ProcessInstantEffect(_damageEffect, damageTarget);
             _alreadyDamaged.Add(damageTarget);
         }
 
