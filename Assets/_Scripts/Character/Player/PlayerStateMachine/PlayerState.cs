@@ -26,6 +26,17 @@ namespace Core
         public override void FrameUpdate()
         {
             base.FrameUpdate();
+            if (!_player.IsOwner) return;
+            CheckDeathState();
+        }
+
+        private void CheckDeathState()
+        {
+            if (_stateMachine.CurrentState == _characterStateMachine.DeathState) return;
+            if (_player.CharacterDeathManager.IsDead && !_stateMachine.IsChangingState)
+            {
+                _stateMachine.ChangeStateRPC(_characterStateMachine.DeathState);
+            }
         }
 
         public override void PhysicsUpdate()

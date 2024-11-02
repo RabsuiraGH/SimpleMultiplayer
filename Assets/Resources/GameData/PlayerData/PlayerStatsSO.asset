@@ -42,7 +42,7 @@ MonoBehaviour:
       value: 0.1
   <JumpMovementSpeedMultiplier>k__BackingField:
     <MaxValue>k__BackingField:
-      value: 2
+      value: 3
     <CurrentValue>k__BackingField:
       value: 2
     <MinValue>k__BackingField:

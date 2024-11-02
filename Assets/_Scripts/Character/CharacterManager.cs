@@ -28,6 +28,7 @@ namespace Core
 
         public CharacterEffectsManager CharacterEffectsManager { get; private set; }
         public CharacterAttackManager CharacterAttackManager { get; private set; }
+        public CharacterDeathManager CharacterDeathManager { get; private set; }
 
         protected virtual void Awake()
         {
@@ -37,6 +38,7 @@ namespace Core
             CharacterStatsManager = GetComponent<CharacterStatsManager>();
             CharacterEffectsManager = GetComponent<CharacterEffectsManager>();
             CharacterAttackManager = GetComponent<CharacterAttackManager>();
+            CharacterDeathManager = GetComponent<CharacterDeathManager>();
 
             _characterStateMachine = GetComponent<CharacterStateMachine>();
         }
@@ -53,6 +55,9 @@ namespace Core
                                  .Subscribe(newValue => CharacterMovementManager.UpdateMovementSpeed(newValue));
             CharacterStatsManager.GetStats().JumpMovementSpeedMultiplier.CurrentValueReadonly
                                  .Subscribe(newValue => CharacterMovementManager.UpdateJumpMovementSpeedMultiplier(newValue));
+
+            CharacterStatsManager.Health.OnValueChanged += CharacterDeathManager.CheckDeath;
+
             gameObject.name += CharacterNetworkManager.ObjectID.Value;
         }
 
@@ -126,6 +131,8 @@ namespace Core
             {
                 CharacterMovementManager.OnMovementDirectionChanged -= ChangeFaceDirectionViaMovement;
             }
+            CharacterStatsManager.Health.OnValueChanged -= CharacterDeathManager.CheckDeath;
+
         }
     }
 }

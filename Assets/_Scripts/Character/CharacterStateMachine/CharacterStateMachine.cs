@@ -14,6 +14,7 @@ namespace Core
         public State JumpState { get; set; }
         public State AttackState { get; set; }
         public State ChargeAttackState { get; set; }
+        public State DeathState { get; set; }
 
         private Dictionary<CharacterStates, State> _states;
 
@@ -23,7 +24,8 @@ namespace Core
             MovementState,
             JumpState,
             AttackState,
-            ChargeAttackState
+            ChargeAttackState,
+            DeathState
         }
 
         public override void Initialize(State startingState, NetworkBehaviour owner)
@@ -38,7 +40,8 @@ namespace Core
                 { CharacterStates.MovementState, MovementState },
                 { CharacterStates.JumpState, JumpState },
                 { CharacterStates.AttackState, AttackState },
-                { CharacterStates.ChargeAttackState, ChargeAttackState }
+                { CharacterStates.ChargeAttackState, ChargeAttackState },
+                { CharacterStates.DeathState, DeathState }
             };
         }
 
