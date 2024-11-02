@@ -72,7 +72,7 @@ namespace Core
         {
             while (IsJumping)
             {
-                Vector2 newPosition = _rigidbody.position + _movementSpeed * Time.fixedDeltaTime * direction;
+                Vector2 newPosition = _rigidbody.position + (_movementSpeed * _jumpMovementSpeedMultiplier * Time.fixedDeltaTime * direction);
                 _rigidbody.MovePosition(newPosition);
                 await Task.Yield();
             }

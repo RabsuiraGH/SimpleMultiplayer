@@ -35,11 +35,18 @@ MonoBehaviour:
       value: -100
   <MovementSpeed>k__BackingField:
     <MaxValue>k__BackingField:
-      value: 5
+      value: 3
     <CurrentValue>k__BackingField:
-      value: 5
+      value: 3
     <MinValue>k__BackingField:
       value: 0.1
+  <JumpMovementSpeedMultiplier>k__BackingField:
+    <MaxValue>k__BackingField:
+      value: 2
+    <CurrentValue>k__BackingField:
+      value: 2
+    <MinValue>k__BackingField:
+      value: 1
   <AttackSpeed>k__BackingField:
     <MaxValue>k__BackingField:
       value: 1

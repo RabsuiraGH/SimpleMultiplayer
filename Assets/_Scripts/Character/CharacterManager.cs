@@ -51,7 +51,8 @@ namespace Core
             // TODO: Maybe sub only if owner
             CharacterStatsManager.GetStats().MovementSpeed.CurrentValueReadonly
                                  .Subscribe(newValue => CharacterMovementManager.UpdateMovementSpeed(newValue));
-
+            CharacterStatsManager.GetStats().JumpMovementSpeedMultiplier.CurrentValueReadonly
+                                 .Subscribe(newValue => CharacterMovementManager.UpdateJumpMovementSpeedMultiplier(newValue));
             gameObject.name += CharacterNetworkManager.ObjectID.Value;
         }
 

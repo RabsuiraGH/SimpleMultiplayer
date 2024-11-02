@@ -14,6 +14,7 @@ namespace Core
 
         [SerializeField] protected float _movementSpeed = 5;
         [SerializeField] private float _turnSpeed = 20f;
+        [SerializeField] protected float _jumpMovementSpeedMultiplier = 5;
 
         public bool IsMoving => _movementDirection.magnitude > 0;
         public bool IsJumping = false;
@@ -53,7 +54,10 @@ namespace Core
         {
             _movementSpeed = speed;
         }
-
+        public void UpdateJumpMovementSpeedMultiplier(float multiplier)
+        {
+            _jumpMovementSpeedMultiplier = multiplier;
+        }
         public virtual void StopMovement()
         {
             _movementDirection = Vector2.zero;
@@ -170,5 +174,7 @@ namespace Core
         {
             PerformJumpClientRpc();
         }
+
+
     }
 }
