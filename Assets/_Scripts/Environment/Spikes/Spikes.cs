@@ -8,14 +8,17 @@ namespace Core
 {
     public class Spikes : NetworkBehaviour
     {
+        [SerializeField] protected CircleCollider2D _collider;
+
         [SerializeField] private CharacterDamageEffectSO _damageEffectOrigin;
         [SerializeField] private CharacterDamageEffectSO _damageEffect;
 
         [SerializeField] private List<CharacterManager> _onSpikes;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             _damageEffect = Instantiate(_damageEffectOrigin);
+            _collider = GetComponent<CircleCollider2D>();
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -37,7 +40,7 @@ namespace Core
             if (!other.TryGetComponent(out CharacterManager damageTarget)) return;
             if (!damageTarget.IsHost) return;
 
-            if (!_onSpikes.Contains(damageTarget))
+            if (_onSpikes.Contains(damageTarget))
             {
                 damageTarget.CharacterMovementManager.OnJump -= ResetSpikeImmunity;
                 _onSpikes.Remove(damageTarget);
