@@ -9,6 +9,7 @@ namespace Core
     public class Spikes : NetworkBehaviour
     {
         [SerializeField] protected CircleCollider2D _collider;
+        [SerializeField] private LayerMask _feetLayer;
 
         [SerializeField] private CharacterDamageEffectSO _damageEffectOrigin;
         [SerializeField] private CharacterDamageEffectSO _damageEffect;
@@ -21,11 +22,13 @@ namespace Core
             _collider = GetComponent<CircleCollider2D>();
         }
 
-        private void OnTriggerEnter2D(Collider2D other)
+        private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (other.gameObject == this.gameObject) return;
-            if (!other.TryGetComponent(out CharacterManager damageTarget)) return;
-            if (!damageTarget.IsHost) return;
+            if (((1 << collision.gameObject.layer) & _feetLayer) == 0) return;
+
+            if (collision.gameObject == this.gameObject) return;
+            CharacterManager damageTarget = collision.GetComponentInParent<CharacterManager>();
+            if (damageTarget == null || !damageTarget.IsHost) return;
 
             if (!_onSpikes.Contains(damageTarget))
             {
@@ -34,11 +37,13 @@ namespace Core
             }
         }
 
-        private void OnTriggerExit2D(Collider2D other)
+        private void OnTriggerExit2D(Collider2D collision)
         {
-            if (other.gameObject == this.gameObject) return;
-            if (!other.TryGetComponent(out CharacterManager damageTarget)) return;
-            if (!damageTarget.IsHost) return;
+            if (((1 << collision.gameObject.layer) & _feetLayer) == 0) return;
+
+            if (collision.gameObject == this.gameObject) return;
+            CharacterManager damageTarget = collision.GetComponentInParent<CharacterManager>();
+            if (damageTarget == null || !damageTarget.IsHost) return;
 
             if (_onSpikes.Contains(damageTarget))
             {
