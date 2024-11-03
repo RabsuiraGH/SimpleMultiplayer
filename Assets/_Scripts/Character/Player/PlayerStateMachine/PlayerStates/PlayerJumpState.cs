@@ -3,45 +3,14 @@ using UnityEngine;
 
 namespace Core
 {
-    public class PlayerJumpState : PlayerState
+    public class PlayerJumpState : CharacterJumpState
     {
-        private readonly CharacterJumpAnimation _jumpAnimation = new();
+        private readonly PlayerManager _player;
 
-        public PlayerJumpState(PlayerManager player, CharacterStateMachine playerStateMachine, EventBus eventBus) :
-            base(player, playerStateMachine, eventBus)
+        public PlayerJumpState(PlayerManager player, CharacterStateMachine stateMachine, EventBus eventBus) :
+            base(player, stateMachine, eventBus)
         {
-        }
-
-        public override void EnterState()
-        {
-            base.EnterState();
-            PlayJumpAnimation();
-        }
-
-        private void PlayJumpAnimation()
-        {
-            _jumpAnimation.SetTags(_player.MainDirection.ToString(), _player.SecDirection.ToString());
-            _player.PlayerAnimationManager.PlayAnimation(_jumpAnimation);
-        }
-
-        public override void ExitState()
-        {
-            base.ExitState();
-        }
-
-        public override void FrameUpdate()
-        {
-            base.FrameUpdate();
-
-            if (!_player.PlayerMovementManager.IsJumping && !_stateMachine.IsChangingState)
-            {
-                _characterStateMachine.ChangeStateRPC(_characterStateMachine.IdleState);
-            }
-        }
-
-        public override void PhysicsUpdate()
-        {
-            base.PhysicsUpdate();
+            _player = player;
         }
     }
 }

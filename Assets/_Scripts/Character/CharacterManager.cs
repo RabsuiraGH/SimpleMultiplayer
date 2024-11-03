@@ -41,10 +41,14 @@ namespace Core
             CharacterDeathManager = GetComponent<CharacterDeathManager>();
 
             _characterStateMachine = GetComponent<CharacterStateMachine>();
+
         }
 
         protected virtual void Start()
         {
+            InitializeStateMachine();
+
+
             if (IsOwner)
             {
                 CharacterMovementManager.OnMovementDirectionChanged += ChangeFaceDirectionViaMovement;
@@ -133,6 +137,12 @@ namespace Core
             }
             CharacterStatsManager.Health.OnValueChanged -= CharacterDeathManager.CheckDeath;
 
+        }
+
+        protected virtual void InitializeStateMachine()
+        {
+            throw new NotImplementedException();
+            // TODO: INIT BASE CHARACTER STATES
         }
     }
 }

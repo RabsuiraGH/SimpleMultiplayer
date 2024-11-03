@@ -43,14 +43,7 @@ namespace Core
             base.Start();
 
             // Setups State Machine
-            _characterStateMachine.IdleState = new PlayerIdleState(this, _characterStateMachine, null);
-            _characterStateMachine.MovementState = new PlayerMovementState(this, _characterStateMachine, null);
-            _characterStateMachine.JumpState = new PlayerJumpState(this, _characterStateMachine, null);
-            _characterStateMachine.AttackState = new PlayerAttackState(this, _characterStateMachine, null);
-            _characterStateMachine.ChargeAttackState = new PlayerChargeAttackState(this, _characterStateMachine, null);
-            _characterStateMachine.DeathState = new PlayerDeathState(this, _characterStateMachine, null);
 
-            _characterStateMachine.Initialize(_characterStateMachine.IdleState, this);
 
             if (IsOwner)
             {
@@ -62,7 +55,18 @@ namespace Core
             {
                 PlayerTeamUIManager.SetupTeamUI(PlayerStatsManager);
             }
+        }
 
+        protected override void InitializeStateMachine()
+        {
+            _characterStateMachine.IdleState = new PlayerIdleState(this, _characterStateMachine, null);
+            _characterStateMachine.MovementState = new PlayerMovementState(this, _characterStateMachine, null);
+            _characterStateMachine.JumpState = new PlayerJumpState(this, _characterStateMachine, null);
+            _characterStateMachine.AttackState = new PlayerAttackState(this, _characterStateMachine, null);
+            _characterStateMachine.ChargeAttackState = new PlayerChargeAttackState(this, _characterStateMachine, null);
+            _characterStateMachine.DeathState = new PlayerDeathState(this, _characterStateMachine, null);
+
+            _characterStateMachine.Initialize(_characterStateMachine.IdleState, this);
         }
 
         protected override void Update()
