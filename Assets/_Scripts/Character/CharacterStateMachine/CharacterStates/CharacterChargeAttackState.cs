@@ -10,7 +10,7 @@ namespace Core
         private float _chargeAnimationDuration = -1f;
         private float _chargeAnimationSpeed;
 
-        protected CharacterChargeAttackState(CharacterManager character, CharacterStateMachine playerStateMachine,
+        public CharacterChargeAttackState(CharacterManager character, CharacterStateMachine playerStateMachine,
                                              EventBus eventBus) : base(
             character, playerStateMachine, eventBus)
         {

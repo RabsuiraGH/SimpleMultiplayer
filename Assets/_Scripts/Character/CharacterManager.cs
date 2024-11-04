@@ -41,7 +41,6 @@ namespace Core
             CharacterDeathManager = GetComponent<CharacterDeathManager>();
 
             _characterStateMachine = GetComponent<CharacterStateMachine>();
-
         }
 
         protected virtual void Start()
@@ -58,7 +57,8 @@ namespace Core
             CharacterStatsManager.GetStats().MovementSpeed.CurrentValueReadonly
                                  .Subscribe(newValue => CharacterMovementManager.UpdateMovementSpeed(newValue));
             CharacterStatsManager.GetStats().JumpMovementSpeedMultiplier.CurrentValueReadonly
-                                 .Subscribe(newValue => CharacterMovementManager.UpdateJumpMovementSpeedMultiplier(newValue));
+                                 .Subscribe(newValue =>
+                                                CharacterMovementManager.UpdateJumpMovementSpeedMultiplier(newValue));
 
             CharacterStatsManager.Health.OnValueChanged += CharacterDeathManager.CheckDeath;
 
@@ -136,13 +136,18 @@ namespace Core
                 CharacterMovementManager.OnMovementDirectionChanged -= ChangeFaceDirectionViaMovement;
             }
             CharacterStatsManager.Health.OnValueChanged -= CharacterDeathManager.CheckDeath;
-
         }
 
         protected virtual void InitializeStateMachine()
         {
-            throw new NotImplementedException();
-            // TODO: INIT BASE CHARACTER STATES
+            _characterStateMachine.IdleState = new CharacterIdleState(this, _characterStateMachine, null);
+            _characterStateMachine.MovementState = new CharacterMovementState(this, _characterStateMachine, null);
+            _characterStateMachine.JumpState = new CharacterJumpState(this, _characterStateMachine, null);
+            _characterStateMachine.AttackState = new CharacterAttackState(this, _characterStateMachine, null);
+            _characterStateMachine.ChargeAttackState = new CharacterChargeAttackState(this, _characterStateMachine, null);
+            _characterStateMachine.DeathState = new CharacterDeathState(this, _characterStateMachine, null);
+
+            _characterStateMachine.Initialize(_characterStateMachine.IdleState, this);
         }
     }
 }

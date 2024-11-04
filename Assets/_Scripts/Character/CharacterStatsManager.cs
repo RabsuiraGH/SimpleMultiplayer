@@ -26,13 +26,14 @@ namespace Core
         [SerializeField] public NetworkVariable<float> ChargeAttackTime;
         [SerializeField] public NetworkVariable<float> MaxChargeAttackTime;
 
+        public override void OnNetworkSpawn()
+        {
+            TryInitStats(_characterStatsSO);
+        }
+
         protected bool TryInitStats(CharacterBaseStatsSO stats, bool createNew = true)
         {
-            if (_characterStatsSO != null)
-            {
-                return false;
-            }
-
+            // TODO: WTF is, should i create new instance or?...
             _characterStatsSO = createNew ? Instantiate(stats) : stats;
 
             SubscribeToStatChanges(Health, MaxHealth, _characterStatsSO.Health);
@@ -41,6 +42,7 @@ namespace Core
             SubscribeToStatChanges(MovementSpeed, MaxMovementSpeed, _characterStatsSO.MovementSpeed);
             SubscribeToStatChanges(AttackSpeed, MaxAttackSpeed, _characterStatsSO.AttackSpeed);
             SubscribeToStatChanges(ChargeAttackTime, MaxChargeAttackTime, _characterStatsSO.ChargeAttackTime);
+
 
             return true;
         }

@@ -29,6 +29,8 @@ namespace Core
 
         protected void SetMovementDirection(Vector2 newDirection)
         {
+            newDirection.Normalize();
+
             if (_movementDirection == newDirection)
             {
                 return;
@@ -55,10 +57,12 @@ namespace Core
         {
             _movementSpeed = speed;
         }
+
         public void UpdateJumpMovementSpeedMultiplier(float multiplier)
         {
             _jumpMovementSpeedMultiplier = multiplier;
         }
+
         public virtual void StopMovement()
         {
             _movementDirection = Vector2.zero;
@@ -80,10 +84,18 @@ namespace Core
 
         public virtual void HandleAllMovement()
         {
+            PerformMovement();
         }
 
         protected virtual void PerformMovement()
         {
+            if (_movementDirection.magnitude == 0)
+            {
+                return;
+            }
+
+            Vector2 newPosition = _rigidbody.position + _movementSpeed * Time.fixedDeltaTime * _movementDirection;
+            _rigidbody.MovePosition(newPosition);
         }
 
         public IEnumerator MovePositionOverTime(Vector2 startPosition, Vector2 endPosition, float time)
@@ -103,39 +115,6 @@ namespace Core
             _rigidbody.position = endPosition;
         }
 
-        // TODO: Maybe delete?
-        public IEnumerator MovePositionOverTime(Vector2 startPosition, Vector2 endPosition, float time, float pushPoint,
-                                                float pushAmount)
-        {
-            float elapsedTime = 0f;
-            float pushTime = time * pushPoint;
-            float afterPushTime = time - pushTime;
-
-            Vector2 pushPosition = Vector2.Lerp(startPosition, endPosition, pushAmount);
-
-            while (elapsedTime < time)
-            {
-                Vector2 newPosition;
-
-                if (elapsedTime < pushTime)
-                {
-                    newPosition = Vector2.Lerp(startPosition, pushPosition, elapsedTime / pushTime);
-                }
-                else
-                {
-                    float timeAfterPush = elapsedTime - pushTime;
-                    newPosition = Vector2.Lerp(pushPosition, endPosition, timeAfterPush / afterPushTime);
-                }
-
-                transform.position = newPosition;
-                elapsedTime += Time.deltaTime;
-
-                yield return null;
-            }
-
-            transform.position = endPosition;
-        }
-
         protected virtual void PerformJump()
         {
             _character.IsPerformingMainAction = true;
@@ -143,12 +122,11 @@ namespace Core
             OnJump?.Invoke(_character);
         }
 
-
         public virtual void PerformJumpRpc()
         {
             if (IsJumping || _character.IsPerformingMainAction) return;
 
-            if(IsOwner)
+            if (IsOwner)
             {
                 PerformJump();
             }
@@ -167,7 +145,7 @@ namespace Core
         [ClientRpc]
         protected virtual void PerformJumpClientRpc()
         {
-            if(IsOwner) return;
+            if (IsOwner) return;
             PerformJump();
         }
 
@@ -176,7 +154,5 @@ namespace Core
         {
             PerformJumpClientRpc();
         }
-
-
     }
 }

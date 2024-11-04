@@ -17,17 +17,6 @@ namespace Core
             _player = GetComponent<PlayerManager>();
         }
 
-        protected override void PerformMovement()
-        {
-            if (_movementDirection.magnitude == 0)
-            {
-                return;
-            }
-
-            Vector2 newPosition = _rigidbody.position + _movementSpeed * Time.fixedDeltaTime * _movementDirection;
-            _rigidbody.MovePosition(newPosition);
-        }
-
         protected override void PerformJump()
         {
             base.PerformJump();
@@ -74,7 +63,8 @@ namespace Core
         {
             while (IsJumping)
             {
-                Vector2 newPosition = _rigidbody.position + (_movementSpeed * _jumpMovementSpeedMultiplier * Time.fixedDeltaTime * direction);
+                Vector2 newPosition = _rigidbody.position +
+                                      (_movementSpeed * _jumpMovementSpeedMultiplier * Time.fixedDeltaTime * direction);
                 _rigidbody.MovePosition(newPosition);
                 await Task.Yield();
             }
@@ -88,21 +78,6 @@ namespace Core
         public void UpdateMovementDirectionViaInput()
         {
             SetMovementDirection(_movementInput);
-        }
-
-        public override void HandleAllMovement()
-        {
-            base.HandleAllMovement();
-
-            PerformMovement();
-        }
-
-        protected override void Update()
-        {
-        }
-
-        protected override void FixedUpdate()
-        {
         }
     }
 }

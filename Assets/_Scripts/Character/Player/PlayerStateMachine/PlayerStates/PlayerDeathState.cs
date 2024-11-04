@@ -3,23 +3,12 @@ using UnityEngine;
 
 namespace Core
 {
-    public class PlayerDeathState : PlayerState
+    public class PlayerDeathState : CharacterDeathState
     {
-        private readonly PlayerDeathAnimation _deathAnimation = new();
-
-        public PlayerDeathState(PlayerManager player, CharacterStateMachine playerStateMachine, EventBus eventBus) :
-            base(
-                player, playerStateMachine, eventBus)
+        public PlayerDeathState(CharacterManager character, CharacterStateMachine stateMachine, EventBus eventBus) : base(character, stateMachine, eventBus)
         {
         }
-
-        public override void EnterState()
-        {
-            base.EnterState();
-            PlayDeathAnimation();
-        }
-
-        private void PlayDeathAnimation()
+        protected override void PlayDeathAnimation()
         {
             if (Random.Range(0, 2) == 0)
             {
@@ -31,27 +20,7 @@ namespace Core
             }
 
 
-            _player.PlayerAnimationManager.PlayAnimation(_deathAnimation);
-        }
-
-        public override void ExitState()
-        {
-            base.ExitState();
-        }
-
-        public override void FrameUpdate()
-        {
-            base.FrameUpdate();
-            if (!_player.IsOwner) return;
-            if (!_player.CharacterDeathManager.IsDead && !_stateMachine.IsChangingState)
-            {
-                _stateMachine.ChangeStateRPC(_characterStateMachine.IdleState);
-            }
-        }
-
-        public override void PhysicsUpdate()
-        {
-            base.PhysicsUpdate();
+            _character.CharacterAnimatorManager.PlayAnimation(_deathAnimation);
         }
     }
 }

@@ -16,7 +16,6 @@ namespace Core
 
         public override void OnNetworkSpawn()
         {
-            base.OnNetworkSpawn();
             TryInitStats(_playerStats);
         }
 

@@ -7,7 +7,7 @@ namespace Core
     {
         private readonly CharacterIdleAnimation _idleAnimation = new();
 
-        protected CharacterIdleState(CharacterManager character, CharacterStateMachine stateMachine, EventBus eventBus) :
+        public CharacterIdleState(CharacterManager character, CharacterStateMachine stateMachine, EventBus eventBus) :
             base(character, stateMachine, eventBus)
         {
         }
@@ -33,6 +33,7 @@ namespace Core
         public override void FrameUpdate()
         {
             base.FrameUpdate();
+            Debug.Log((this, $"{_character.IsOwner}   {_character.CharacterMovementManager.IsMoving}"));
             if (!_character.IsOwner) return;
 
             if (_character.CharacterMovementManager.IsJumping && !_stateMachine.IsChangingState)
